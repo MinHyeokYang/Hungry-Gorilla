@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKUCheck — K-Beauty 해외 진출 리스크 스캐너</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F5F3EE;
+  --surface: #FDFCFA;
+  --surface2: #F0EDE6;
+  --border: rgba(60,50,30,0.12);
+  --border-strong: rgba(60,50,30,0.22);
+  --text: #1C1810;
+  --text-muted: #7A7060;
+  --text-faint: #B0A898;
+  --accent: #2D4A8A;
+  --accent-light: #E8EDF7;
+  --red: #C0392B;
+  --red-bg: #FDF0EE;
+  --red-border: #E8C5C0;
+  --yellow: #A0620A;
+  --yellow-bg: #FDF6EC;
+  --yellow-border: #E8D5B0;
+  --green: #1E6B3A;
+  --green-bg: #EEF7F2;
+  --green-border: #B8DFC8;
+  --gray-bg: #F0EDE6;
+  --gray-border: #D8D2C8;
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* NAV */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(245,243,238,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 0.5px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; height: 56px;
+}
+.logo {
+  font-family: 'Instrument Serif', serif;
+  font-size: 20px; letter-spacing: -0.3px;
+  color: var(--text);
+}
+.logo em { font-style: italic; color: var(--accent); }
+.nav-right { display: flex; gap: 8px; align-items: center; }
+.nav-tag {
+  font-size: 11px; font-family: 'DM Mono', monospace;
+  padding: 3px 10px; border-radius: 20px;
+  background: var(--accent-light); color: var(--accent);
+  letter-spacing: .02em;
+}
+
+/* HERO */
+.hero {
+  max-width: 760px; margin: 0 auto;
+  padding: 64px 24px 48px;
+  text-align: center;
+}
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: .1em;
+  color: var(--text-muted); text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 44px; line-height: 1.15;
+  letter-spacing: -1px; color: var(--text);
+  margin-bottom: 16px;
+}
+.hero h1 em { font-style: italic; color: var(--accent); }
+.hero p {
+  font-size: 16px; color: var(--text-muted);
+  max-width: 520px; margin: 0 auto 32px;
+  line-height: 1.7;
+}
+.hero-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent); color: #fff;
+  padding: 13px 28px; border-radius: var(--radius);
+  font-size: 14px; font-weight: 500;
+  cursor: pointer; border: none;
+  transition: opacity .2s;
+}
+.hero-cta:hover { opacity: .85; }
+.hero-note {
+  margin-top: 14px;
+  font-size: 12px; color: var(--text-faint);
+  font-family: 'DM Mono', monospace;
+}
+
+/* MAIN LAYOUT */
+.container { max-width: 860px; margin: 0 auto; padding: 0 24px 80px; }
+
+/* CARD */
+.card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.card-header {
+  padding: 18px 24px;
+  border-bottom: 0.5px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+}
+.card-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-family: 'DM Mono', monospace;
+}
+.card-num.done { background: var(--green); }
+.card-title { font-size: 14px; font-weight: 500; }
+.card-body { padding: 20px 24px; }
+
+/* COUNTRY TOGGLE */
+.country-toggle {
+  display: flex; gap: 10px; margin-bottom: 20px;
+}
+.country-btn {
+  flex: 1; padding: 14px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer; text-align: left;
+  transition: all .15s;
+}
+.country-btn:hover { border-color: var(--accent); }
+.country-btn.active {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+.country-btn-flag { font-size: 22px; margin-bottom: 6px; }
+.country-btn-name { font-size: 13px; font-weight: 500; }
+.country-btn-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
+
+/* TEXTAREA */
+.field-label {
+  font-size: 12px; font-weight: 500;
+  color: var(--text-muted); margin-bottom: 8px;
+  text-transform: uppercase; letter-spacing: .06em;
+  font-family: 'DM Mono', monospace;
+}
+textarea, input[type=text] {
+  width: 100%; padding: 12px 14px;
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: var(--text);
+  resize: vertical; outline: none;
+  transition: border-color .15s;
+  line-height: 1.6;
+}
+textarea:focus, input[type=text]:focus { border-color: var(--accent); }
+textarea { min-height: 100px; }
+
+/* UPLOAD ZONE */
+.upload-zone {
+  border: 1.5px dashed var(--border-strong);
+  border-radius: var(--radius);
+  padding: 20px; text-align: center;
+  cursor: pointer; transition: all .15s;
+  background: var(--bg);
+}
+.upload-zone:hover { border-color: var(--accent); background: var(--accent-light); }
+.upload-icon { font-size: 24px; margin-bottom: 8px; }
+.upload-label { font-size: 13px; color: var(--text-muted); }
+.upload-sub { font-size: 11px; color: var(--text-faint); margin-top: 4px; font-family: 'DM Mono', monospace; }
+
+/* TAGS */
+.tag-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag-btn {
+  padding: 7px 14px; border-radius: 20px;
+  border: 0.5px solid var(--border-strong);
+  background: var(--surface); font-size: 13px;
+  cursor: pointer; transition: all .15s;
+  color: var(--text-muted);
+}
+.tag-btn:hover { border-color: var(--accent); color: var(--accent); }
+.tag-btn.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); font-weight: 500; }
+
+/* ANALYZE BTN */
+.analyze-btn {
+  width: 100%; padding: 15px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: var(--radius);
+  font-size: 15px; font-weight: 500;
+  cursor: pointer; transition: opacity .2s;
+  font-family: 'DM Sans', sans-serif;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.analyze-btn:hover { opacity: .85; }
+
+/* LOADING */
+.loading-screen {
+  display: none; text-align: center; padding: 60px 24px;
+}
+.loading-screen.active { display: block; }
+.loading-ring {
+  width: 48px; height: 48px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  margin: 0 auto 20px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-steps { margin-top: 20px; }
+.loading-step {
+  font-size: 12px; font-family: 'DM Mono', monospace;
+  color: var(--text-faint); padding: 4px 0;
+  transition: color .3s;
+}
+.loading-step.active { color: var(--accent); }
+.loading-step.done { color: var(--green); }
+
+/* RESULTS */
+.results-screen { display: none; }
+.results-screen.active { display: block; }
+
+.result-topbar {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.result-product { display: flex; align-items: center; gap: 14px; }
+.product-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  background: var(--accent-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.product-name { font-size: 15px; font-weight: 500; }
+.product-meta { font-size: 12px; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+.result-verdict {
+  display: flex; align-items: center; gap: 10px;
+}
+.verdict-badge {
+  padding: 6px 14px; border-radius: 20px;
+  font-size: 12px; font-weight: 500;
+  font-family: 'DM Mono', monospace;
+}
+.verdict-badge.fail { background: var(--red-bg); color: var(--red); border: 0.5px solid var(--red-border); }
+.verdict-badge.warn { background: var(--yellow-bg); color: var(--yellow); border: 0.5px solid var(--yellow-border); }
+.verdict-badge.pass { background: var(--green-bg); color: var(--green); border: 0.5px solid var(--green-border); }
+
+/* PROGRESS */
+.progress-wrap { margin-bottom: 20px; }
+.progress-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.progress-label { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--text-muted); }
+.progress-count { font-size: 12px; font-family: 'DM Mono', monospace; }
+.progress-track {
+  height: 5px; background: var(--surface2);
+  border-radius: 3px; overflow: hidden; display: flex; gap: 2px;
+}
+.progress-seg { height: 100%; border-radius: 2px; }
+
+/* SECTION */
+.section-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 20px;
+  border-bottom: 0.5px solid var(--border);
+  background: var(--surface2);
+}
+.section-icon { font-size: 14px; }
+.section-name { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; font-family: 'DM Mono', monospace; color: var(--text-muted); }
+.section-count { margin-left: auto; font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text-faint); }
+
+/* CHECK ITEM */
+.check-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 20px;
+  border-bottom: 0.5px solid var(--border);
+  transition: background .15s; cursor: pointer;
+  position: relative;
+}
+.check-item:last-child { border-bottom: none; }
+.check-item:hover { background: var(--bg); }
+.check-item::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px;
+}
+.check-item.fail::before { background: var(--red); }
+.check-item.warn::before { background: #E8A020; }
+.check-item.pass::before { background: var(--green); }
+.check-item.pending::before { background: var(--gray-border); }
+
+.check-dot {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+  font-size: 11px; font-weight: 600;
+  font-family: 'DM Mono', monospace;
+}
+.check-dot.fail { background: var(--red-bg); color: var(--red); border: 0.5px solid var(--red-border); }
+.check-dot.warn { background: var(--yellow-bg); color: var(--yellow); border: 0.5px solid var(--yellow-border); }
+.check-dot.pass { background: var(--green-bg); color: var(--green); border: 0.5px solid var(--green-border); }
+.check-dot.pending { background: var(--gray-bg); color: var(--text-faint); border: 0.5px solid var(--gray-border); }
+
+.check-body { flex: 1; }
+.check-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+.check-desc { font-size: 12px; color: var(--text-muted); line-height: 1.55; }
+.check-action {
+  margin-top: 8px; font-size: 12px;
+  color: var(--accent); font-weight: 500;
+  display: flex; align-items: center; gap: 4px;
+}
+.check-alt {
+  margin-top: 6px; padding: 8px 10px;
+  background: var(--accent-light); border-radius: 6px;
+  font-size: 12px; color: var(--accent);
+  font-style: italic;
+}
+.check-arrow { font-size: 14px; color: var(--text-faint); margin-top: 2px; flex-shrink: 0; }
+
+/* CHECK ITEM EXPAND */
+.check-detail {
+  display: none;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 0.5px solid var(--border);
+}
+.check-item.expanded .check-detail { display: block; }
+.check-item.expanded .check-arrow { transform: rotate(90deg); }
+.check-arrow { transition: transform .2s; }
+
+.detail-row {
+  display: flex; gap: 8px; align-items: flex-start;
+  margin-bottom: 7px; font-size: 12px;
+}
+.detail-label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  color: var(--text-faint); text-transform: uppercase;
+  letter-spacing: .06em; white-space: nowrap;
+  margin-top: 2px; min-width: 48px;
+}
+.detail-value { color: var(--text-muted); line-height: 1.55; }
+.detail-value.action { color: var(--accent); font-weight: 500; }
+.detail-value.alt {
+  color: var(--accent); font-style: italic;
+  background: var(--accent-light);
+  padding: 6px 10px; border-radius: 6px;
+  display: block; margin-top: 2px;
+}
+
+/* VALIDATION */
+.input-error {
+  font-size: 12px; color: var(--red);
+  margin-top: 6px; display: none;
+  font-family: 'DM Mono', monospace;
+}
+.input-error.visible { display: block; }
+textarea.error, input[type=text].error {
+  border-color: var(--red) !important;
+}
+.stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 20px; }
+.stat-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px; text-align: center;
+}
+.stat-num { font-size: 26px; font-weight: 500; font-family: 'Instrument Serif', serif; }
+.stat-num.red { color: var(--red); }
+.stat-num.yellow { color: var(--yellow); }
+.stat-num.green { color: var(--green); }
+.stat-num.gray { color: var(--text-faint); }
+.stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
+
+/* BOTTOM ACTIONS */
+.bottom-actions { display: flex; gap: 10px; padding: 20px 24px; border-top: 0.5px solid var(--border); }
+.btn-primary {
+  flex: 1; padding: 12px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: var(--radius);
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: opacity .2s;
+}
+.btn-primary:hover { opacity: .85; }
+.btn-secondary {
+  padding: 12px 18px;
+  background: transparent;
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius);
+  font-size: 13px; color: var(--text-muted);
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all .15s;
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+/* DISCLAIMER */
+.disclaimer {
+  margin: 16px 0;
+  padding: 12px 16px;
+  background: var(--yellow-bg);
+  border: 0.5px solid var(--yellow-border);
+  border-radius: var(--radius);
+  font-size: 12px; color: var(--yellow);
+  line-height: 1.6;
+}
+
+/* EMAIL CAPTURE */
+.email-capture {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px; margin-top: 16px;
+  text-align: center;
+}
+.email-capture h3 { font-family: 'Instrument Serif', serif; font-size: 20px; margin-bottom: 8px; }
+.email-capture p { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+.email-row { display: flex; gap: 8px; max-width: 400px; margin: 0 auto; }
+.email-row input { flex: 1; min-height: unset; padding: 10px 14px; }
+
+/* HIDDEN */
+.hidden { display: none !important; }
+
+/* MARKET TABS */
+.market-tabs { display: flex; gap: 0; border-bottom: 0.5px solid var(--border); padding: 14px 20px 0; }
+.market-tab {
+  padding: 8px 16px; font-size: 13px; font-weight: 500;
+  color: var(--accent); font-family: 'DM Mono', monospace;
+  border-bottom: 2px solid var(--accent); margin-bottom: -0.5px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .hero h1 { font-size: 32px; }
+  .stat-grid { grid-template-columns: repeat(2,1fr); }
+  .result-topbar { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .country-toggle { flex-direction: column; }
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(28,24,16,0.4);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.modal-box {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px; width: 100%; max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+.modal-title { font-family: 'Instrument Serif', serif; font-size: 20px; margin-bottom: 8px; }
+.modal-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+
+/* NAV BTN */
+.nav-btn {
+  font-size: 12px; padding: 6px 12px;
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: transparent; color: var(--text-muted);
+  cursor: pointer; transition: all .15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+.nav-btn.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="logo">SKU<em>Check</em></div>
+  <div class="nav-right">
+    <span class="nav-tag">BETA</span>
+    <button class="nav-btn" onclick="toggleApiModal()" id="api-nav-btn">🔑 API 키 설정</button>
+  </div>
+</nav>
+
+<!-- API KEY MODAL -->
+<div id="api-modal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-title">Anthropic API 키 입력</div>
+    <div class="modal-desc">API 키는 브라우저에만 저장되며 서버로 전송되지 않습니다.<br>실제 AI 분석을 사용하려면 키가 필요해요.</div>
+    <input type="password" id="api-key-input" placeholder="sk-ant-..." style="margin-bottom:12px">
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" onclick="saveApiKey()">저장</button>
+      <button class="btn-secondary" onclick="toggleApiModal()">닫기</button>
+    </div>
+    <div id="api-key-status" style="font-size:12px;margin-top:10px;color:var(--text-muted);font-family:'DM Mono',monospace"></div>
+  </div>
+</div>
+
+<!-- LANDING -->
+<div id="landing">
+  <div class="hero">
+    <div class="hero-eyebrow">K-Beauty 해외 진출 리스크 스캐너</div>
+    <h1>우리 제품,<br><em>지금 팔 수 있나요?</em></h1>
+    <p>SKU별 전성분·라벨·클레임을 분석해 미국·영국 시장 규제 리스크를 1차 진단하고, 무엇을 고쳐야 하는지 알려드려요.</p>
+    <button class="hero-cta" onclick="showInput()">
+      지금 바로 분석하기 →
+    </button>
+    <div class="hero-note">회원가입 불필요 · 무료 체험</div>
+  </div>
+</div>
+
+<!-- INPUT FORM -->
+<div id="input-section" class="container hidden">
+
+  <!-- Step 1: 국가 선택 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-num">1</div>
+      <div class="card-title">진출하려는 시장을 선택하세요</div>
+    </div>
+    <div class="card-body">
+      <div class="country-toggle">
+        <div class="country-btn active" id="btn-us" onclick="selectCountry('us')">
+          <div class="country-btn-flag">🇺🇸</div>
+          <div class="country-btn-name">미국</div>
+          <div class="country-btn-sub">FDA · MoCRA</div>
+        </div>
+        <div class="country-btn" id="btn-uk" onclick="selectCountry('uk')">
+          <div class="country-btn-flag">🇬🇧</div>
+          <div class="country-btn-name">영국</div>
+          <div class="country-btn-sub">OPSS · UK RP · SCPN</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: 제품 정보 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-num">2</div>
+      <div class="card-title">제품 기본 정보</div>
+    </div>
+    <div class="card-body">
+      <div class="field-label">제품명</div>
+      <input type="text" id="product-name" placeholder="예: 나이트 리페어 세럼" style="margin-bottom:4px" value="나이트 리페어 세럼">
+      <div class="input-error" id="err-name">제품명을 입력해주세요.</div>
+      <div class="field-label" style="margin-bottom:8px">제품 카테고리</div>
+      <div class="tag-grid">
+        <div class="tag-btn active" onclick="toggleTag(this)">세럼</div>
+        <div class="tag-btn" onclick="toggleTag(this)">선크림</div>
+        <div class="tag-btn" onclick="toggleTag(this)">토너</div>
+        <div class="tag-btn" onclick="toggleTag(this)">립/색조</div>
+        <div class="tag-btn" onclick="toggleTag(this)">아이크림</div>
+        <div class="tag-btn" onclick="toggleTag(this)">클렌저</div>
+        <div class="tag-btn" onclick="toggleTag(this)">마스크팩</div>
+        <div class="tag-btn" onclick="toggleTag(this)">기타</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: 전성분 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-num">3</div>
+      <div class="card-title">전성분 입력</div>
+    </div>
+    <div class="card-body">
+      <div class="field-label">전성분 (INCI명) 직접 입력</div>
+      <textarea id="ingredients" placeholder="예: Water, Niacinamide, Butylene Glycol, Hydroquinone, Retinol...">Water, Niacinamide 10%, Butylene Glycol, Hydroquinone, Retinol 0.5%, Glycerin, Adenosine, Panthenol, Allantoin, Xanthan Gum, Disodium EDTA, Phenoxyethanol, Ethylhexylglycerin</textarea>
+      <div class="input-error" id="err-ingredients">전성분 또는 라벨 이미지를 입력해주세요.</div>
+      <div style="margin: 14px 0; display:flex; align-items:center; gap:10px; color:var(--text-faint); font-size:12px">
+        <div style="flex:1; height:0.5px; background:var(--border)"></div>
+        또는
+        <div style="flex:1; height:0.5px; background:var(--border)"></div>
+      </div>
+      <div class="upload-zone" onclick="mockUpload('ingredients')">
+        <div class="upload-icon">📄</div>
+        <div class="upload-label">이미지 / PDF 업로드</div>
+        <div class="upload-sub">JPG, PNG, PDF · 최대 10MB</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4: 라벨 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-num">4</div>
+      <div class="card-title">라벨 이미지 업로드</div>
+    </div>
+    <div class="card-body">
+      <div class="upload-zone" onclick="mockUpload('label')" id="label-upload">
+        <div class="upload-icon">🏷️</div>
+        <div class="upload-label">제품 라벨 이미지를 업로드하세요</div>
+        <div class="upload-sub">AI가 라벨을 읽고 누락 항목을 분석합니다</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 5: 클레임 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-num">5</div>
+      <div class="card-title">마케팅 클레임 / 상세페이지 문구</div>
+    </div>
+    <div class="card-body">
+      <div class="field-label">광고·패키지·상세페이지 문구</div>
+      <textarea id="claims" placeholder="예: 주름을 없애주는 안티에이징 세럼, 피부 재생을 촉진합니다...">주름을 없애주는 안티에이징 세럼. 피부 재생을 도와 탄력을 높이고, 기미·잡티를 개선합니다. 하루 만에 피부가 달라지는 걸 느낄 수 있어요.</textarea>
+    </div>
+  </div>
+
+  <!-- Step 6: 보유 서류 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-num">6</div>
+      <div class="card-title">현재 보유 중인 서류 (해당 항목 선택)</div>
+    </div>
+    <div class="card-body">
+      <div class="tag-grid" id="docs-tags">
+        <div class="tag-btn" onclick="toggleTag(this)">CoA (성적서)</div>
+        <div class="tag-btn active" onclick="toggleTag(this)">국내 제품 안전 자료</div>
+        <div class="tag-btn" onclick="toggleTag(this)">영문 라벨 초안</div>
+        <div class="tag-btn" onclick="toggleTag(this)">MSDS</div>
+        <div class="tag-btn" onclick="toggleTag(this)">GMP 인증서</div>
+        <div class="tag-btn" onclick="toggleTag(this)">없음</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="analyze-btn" onclick="startAnalysis()">
+    <span>🔍</span>
+    <span>AI 리스크 분석 시작</span>
+  </button>
+</div>
+
+<!-- LOADING -->
+<div id="loading-section" class="container hidden">
+  <div class="loading-screen active">
+    <div class="loading-ring"></div>
+    <div style="font-family:'Instrument Serif',serif; font-size:22px; margin-bottom:8px">분석 중...</div>
+    <div style="font-size:13px; color:var(--text-muted); margin-bottom:24px">잠시만 기다려 주세요</div>
+    <div class="loading-steps" id="loading-steps">
+      <div class="loading-step" id="ls1">전성분 파싱 중...</div>
+      <div class="loading-step" id="ls2">규제기관 DB 대조 중...</div>
+      <div class="loading-step" id="ls3">Drug claim 감지 중...</div>
+      <div class="loading-step" id="ls4">라벨 누락 항목 확인 중...</div>
+      <div class="loading-step" id="ls5">규제 준비도 체크 중...</div>
+      <div class="loading-step" id="ls6">리포트 생성 중...</div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="results-section" class="container hidden">
+  <div class="results-screen active">
+
+    <!-- TOP BAR -->
+    <div class="result-topbar">
+      <div class="result-product">
+        <div class="product-icon">🧴</div>
+        <div>
+          <div class="product-name" id="r-product-name">나이트 리페어 세럼</div>
+          <div class="product-meta" id="r-product-meta">세럼 · 13개 성분 · 🇺🇸 미국 FDA</div>
+        </div>
+      </div>
+      <div class="result-verdict">
+        <div class="verdict-badge fail" id="r-verdict">현재 판매 불가</div>
+      </div>
+    </div>
+
+    <!-- STAT GRID -->
+    <div class="stat-grid" id="r-stats"></div>
+
+    <!-- PROGRESS -->
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <div class="progress-label">전체 리스크 현황</div>
+        <div class="progress-count" id="r-progress-count"></div>
+      </div>
+      <div class="progress-track" id="r-progress-track"></div>
+    </div>
+
+    <div class="disclaimer">
+      ⚠️ 이 결과는 AI 기반 1차 스크리닝입니다. 법적 효력이 없으며 최종 판단은 규제 전문가 검토가 필요합니다.
+    </div>
+
+    <!-- MARKET TABS -->
+    <div class="card" id="results-card">
+      <div class="market-tabs" id="market-tabs"></div>
+      <div id="results-body"></div>
+      <div class="bottom-actions">
+        <button class="btn-primary" onclick="exportPDF()">📄 영문 PDF 리포트 내보내기</button>
+        <button class="btn-secondary" onclick="resetApp()">다른 SKU 분석</button>
+      </div>
+    </div>
+
+    <!-- EMAIL CAPTURE -->
+    <div class="email-capture">
+      <h3>결과를 저장하고 히스토리 관리하기</h3>
+      <p>이메일을 입력하면 분석 결과를 저장하고 다음에 다시 확인할 수 있어요.</p>
+      <div class="email-row">
+        <input type="text" placeholder="이메일 주소 입력">
+        <button class="btn-primary" style="flex:none; padding:10px 18px;">저장</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────
+let selectedCountry = 'us';
+let apiKey = localStorage.getItem('skucheck_api_key') || '';
+let analysisResult = null;
+let uploadedLabelBase64 = null;
+
+// ── API KEY MODAL ───────────────────────────────────────────
+function toggleApiModal() {
+  const modal = document.getElementById('api-modal');
+  modal.classList.toggle('hidden');
+  if (!modal.classList.contains('hidden')) {
+    document.getElementById('api-key-input').value = apiKey;
+    updateApiStatus();
+  }
+}
+function saveApiKey() {
+  apiKey = document.getElementById('api-key-input').value.trim();
+  localStorage.setItem('skucheck_api_key', apiKey);
+  updateApiStatus();
+  const btn = document.getElementById('api-nav-btn');
+  btn.classList.toggle('active', !!apiKey);
+  setTimeout(toggleApiModal, 800);
+}
+function updateApiStatus() {
+  const el = document.getElementById('api-key-status');
+  if (apiKey && apiKey.startsWith('sk-ant-')) {
+    el.style.color = 'var(--green)';
+    el.textContent = '✓ API 키가 설정되었습니다. 실제 AI 분석이 활성화됩니다.';
+  } else if (apiKey) {
+    el.style.color = 'var(--yellow)';
+    el.textContent = '⚠ 키 형식을 확인해주세요. (sk-ant- 로 시작해야 합니다)';
+  } else {
+    el.style.color = 'var(--text-faint)';
+    el.textContent = 'API 키 없이는 Mock 데이터로 작동합니다.';
+  }
+}
+// init nav btn state on load
+window.addEventListener('DOMContentLoaded', () => {
+  if (apiKey) document.getElementById('api-nav-btn').classList.add('active');
+});
+
+// ── MOCK DATA ──────────────────────────────────────────────
+const mockData = {
+  us: {
+    verdict: 'fail',
+    verdictLabel: '현재 판매 불가',
+    stats: [
+      { num: 2, label: '위험 이슈', cls: 'red' },
+      { num: 3, label: '주의 이슈', cls: 'yellow' },
+      { num: 8, label: '성분 통과', cls: 'green' },
+      { num: 2, label: '확인 필요', cls: 'gray' },
+    ],
+    progressSegs: [
+      { pct: 13, color: '#C0392B' },
+      { pct: 20, color: '#E8A020' },
+      { pct: 53, color: '#1E6B3A' },
+      { pct: 14, color: '#D8D2C8' },
+    ],
+    progressCount: '위험 2 · 주의 3 · 통과 8 · 미확인 2',
+    sections: [
+      {
+        icon: '🧪', name: '성분 안전성 (Ingredient Safety)', count: '3건',
+        items: [
+          {
+            status: 'fail', title: 'Hydroquinone — FDA 금지성분',
+            desc: '미국 화장품에 사용 불가. OTC Drug (미백제)으로만 허용되며 일반 화장품 판매 불가능.',
+            action: '성분 제거 필요',
+            alt: '대안 성분 후보: Alpha-Arbutin, Kojic Acid, Tranexamic Acid (별도 확인 필요)'
+          },
+          {
+            status: 'warn', title: 'Retinol 0.5% — 농도 확인 필요',
+            desc: '미국에서 화장품 사용 가능. 단 고농도(0.3% 초과) 제품은 유럽 기준 초과로 글로벌 판매 시 추가 검토 필요.',
+            action: 'CoA에서 실제 함량 확인 후 라벨 표기 검토'
+          },
+          {
+            status: 'pass', title: '나머지 11개 성분 — 이상 없음',
+            desc: 'FDA 금지·제한 성분 목록(21 CFR 700) 대조 완료. 이상 성분 없음.'
+          }
+        ]
+      },
+      {
+        icon: '📢', name: '마케팅 클레임 (Claim Risk)', count: '3건',
+        items: [
+          {
+            status: 'fail', title: '"주름을 없애주는" — Drug claim 위험',
+            desc: '신체 구조 변화를 암시하는 표현. FDA 기준 OTC Drug claim으로 분류될 수 있음.',
+            action: '문구 수정 필요',
+            alt: '수정 제안: "주름이 덜 보이도록 도와주는" / "피부결을 부드럽게 하는"'
+          },
+          {
+            status: 'warn', title: '"피부 재생을 도와" — 경계선 표현',
+            desc: '재생(regeneration) 관련 표현은 Drug claim 경계선. 맥락에 따라 문제될 수 있음.',
+            action: '완화 표현으로 수정 권고',
+            alt: '수정 제안: "피부 컨디션을 개선하는" / "건강한 피부를 유지하도록 돕는"'
+          },
+          {
+            status: 'warn', title: '"기미·잡티를 개선" — 추가 검토 필요',
+            desc: 'Skin lightening claim은 OTC Drug 분류 가능성 있음. Hydroquinone 제거 후에도 클레임 문구 재검토 필요.',
+            action: '성분 변경 후 클레임 재검토'
+          }
+        ]
+      },
+      {
+        icon: '🏷️', name: '라벨링 요건 (Label Requirements)', count: '2건',
+        items: [
+          {
+            status: 'warn', title: 'Responsible Person / Distributor 정보 누락',
+            desc: 'FDA 기준 미국 내 Responsible Person 이름·주소 및 연락처 표기 필요.',
+            action: '미국 내 수입자 또는 Responsible Person 정보 추가'
+          },
+          {
+            status: 'pass', title: '나머지 라벨 항목 — 이상 없음',
+            desc: 'Net quantity, INCI 전성분 표기, 경고문구 기본 형식 확인 완료.'
+          }
+        ]
+      },
+      {
+        icon: '📋', name: 'MoCRA 준비도', count: '2건',
+        items: [
+          {
+            status: 'pending', title: 'Facility Registration — 미확인',
+            desc: 'MoCRA(2022) 시행 후 미국 내 판매 화장품 제조시설 FDA 등록 의무화.',
+            action: '제조사 FDA 시설 등록 여부 확인 필요'
+          },
+          {
+            status: 'pending', title: 'Product Listing — 미확인',
+            desc: 'FDA 제품 리스팅 신고 필요. 2024년부터 기존 제품도 등록 대상.',
+            action: 'FDA Cosmetics Direct 시스템 통해 등록 필요'
+          }
+        ]
+      }
+    ]
+  },
+  uk: {
+    verdict: 'warn',
+    verdictLabel: '수정 후 판매 가능',
+    stats: [
+      { num: 1, label: '위험 이슈', cls: 'red' },
+      { num: 4, label: '주의 이슈', cls: 'yellow' },
+      { num: 8, label: '성분 통과', cls: 'green' },
+      { num: 3, label: '확인 필요', cls: 'gray' },
+    ],
+    progressSegs: [
+      { pct: 6, color: '#C0392B' },
+      { pct: 25, color: '#E8A020' },
+      { pct: 50, color: '#1E6B3A' },
+      { pct: 19, color: '#D8D2C8' },
+    ],
+    progressCount: '위험 1 · 주의 4 · 통과 8 · 미확인 3',
+    sections: [
+      {
+        icon: '🧪', name: '성분 안전성 (Ingredient Safety)', count: '2건',
+        items: [
+          {
+            status: 'fail', title: 'Hydroquinone — UK 금지성분',
+            desc: 'UK Cosmetics Regulation Annex II 금지 성분. 미국과 동일하게 제거 필요.',
+            action: '성분 제거 필요',
+            alt: '대안 성분 후보: Alpha-Arbutin, Kojic Acid (별도 확인 필요)'
+          },
+          {
+            status: 'warn', title: 'Retinol 0.5% — UK 농도 제한 초과 가능',
+            desc: 'UK/EU 기준 Retinol은 페이스 제품 0.3% 제한. 0.5% 선언 시 초과 해당.',
+            action: '함량 0.3% 이하로 조정 또는 전문가 검토 필요'
+          },
+          {
+            status: 'pass', title: '나머지 11개 성분 — 이상 없음',
+            desc: 'UK Cosmetics Regulation Annex II/III 대조 완료.'
+          }
+        ]
+      },
+      {
+        icon: '📢', name: '마케팅 클레임 (Claim Risk)', count: '2건',
+        items: [
+          {
+            status: 'warn', title: '"주름을 없애주는" — Misleading claim',
+            desc: 'UK OPSS 기준 입증되지 않은 효능 주장은 misleading claim으로 제재 가능.',
+            action: '임상 근거자료 확보 또는 문구 완화 필요',
+            alt: '수정 제안: "주름의 외관을 줄여주는" / "안티에이징 케어"'
+          },
+          {
+            status: 'warn', title: '"기미·잡티를 개선" — 효능 근거 필요',
+            desc: '영국 시장에서 미백/색소 관련 클레임은 CPSR에 효능 근거자료 포함 권고.',
+            action: '클레임 근거자료(in-vitro 또는 임상) 확보 권고'
+          }
+        ]
+      },
+      {
+        icon: '🏷️', name: '라벨링 요건 (UK Label)', count: '3건',
+        items: [
+          {
+            status: 'warn', title: 'UK Responsible Person 정보 필수',
+            desc: 'UK RP 이름 및 영국 내 주소 라벨 표기 의무. Brexit 이후 EU RP는 불인정.',
+            action: '영국 내 UK RP 파트너 지정 및 라벨 추가 필요'
+          },
+          {
+            status: 'warn', title: 'PAO / Expiry Date 표기 확인 필요',
+            desc: 'Period After Opening 또는 유효기간 표기 여부 라벨에서 확인 필요.',
+            action: '라벨에 PAO 심볼(🍯) 또는 유효기간 추가'
+          },
+          {
+            status: 'pass', title: '기타 라벨 항목 — 이상 없음',
+            desc: 'Nominal content, INCI 성분 표기, 배치 번호 형식 확인 완료.'
+          }
+        ]
+      },
+      {
+        icon: '📋', name: 'UK 규제 준비도 (SCPN · CPSR)', count: '3건',
+        items: [
+          {
+            status: 'pending', title: 'UK RP 지정 — 미확인',
+            desc: '영국 내 판매를 위해 UK Responsible Person 필수 지정. EU RP와 별도.',
+            action: 'UK RP 대행사 또는 파트너 지정 필요'
+          },
+          {
+            status: 'pending', title: 'SCPN 신고 — 미확인',
+            desc: 'Submit Cosmetic Product Notification: 영국 내 최초 판매 전 OPSS 포털 신고 필수.',
+            action: 'UK RP 통해 OPSS 포털 신고 진행'
+          },
+          {
+            status: 'pending', title: 'CPSR (안전성 평가 보고서) — 미확인',
+            desc: 'Cosmetic Product Safety Report: EU 공인 Safety Assessor가 작성한 보고서 필요.',
+            action: '기존 국내 안전 자료 기반으로 CPSR 작성 의뢰'
+          }
+        ]
+      }
+    ]
+  }
+};
+
+// ── HELPERS ────────────────────────────────────────────────
+function show(id) { document.getElementById(id).classList.remove('hidden'); }
+function hide(id) { document.getElementById(id).classList.add('hidden'); }
+
+function showInput() {
+  hide('landing');
+  show('input-section');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function selectCountry(c) {
+  selectedCountry = c;
+  document.getElementById('btn-us').classList.toggle('active', c === 'us');
+  document.getElementById('btn-uk').classList.toggle('active', c === 'uk');
+}
+
+function toggleTag(el) {
+  el.classList.toggle('active');
+}
+
+function mockUpload(type) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = type === 'label' ? 'image/*' : 'image/*,.pdf,.txt';
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const zone = type === 'label' ? document.getElementById('label-upload') : null;
+    if (zone) {
+      zone.innerHTML = `<div class="upload-icon">✅</div><div class="upload-label" style="color:var(--green)">${file.name} 업로드 완료</div><div class="upload-sub">AI가 라벨을 분석합니다</div>`;
+    }
+    // For label images, convert to base64
+    if (type === 'label' && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        uploadedLabelBase64 = {
+          data: ev.target.result.split(',')[1],
+          mediaType: file.type
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+    // For ingredients file, read text
+    if (type === 'ingredients' && !file.type.startsWith('image/')) {
+      const text = await file.text();
+      document.getElementById('ingredients').value = text;
+    }
+  };
+  input.click();
+}
+
+// ── ANALYSIS ───────────────────────────────────────────────
+function startAnalysis() {
+  // ── Validation ──────────────────────────────────────────
+  let valid = true;
+
+  const nameEl = document.getElementById('product-name');
+  const nameErr = document.getElementById('err-name');
+  if (!nameEl.value.trim()) {
+    nameEl.classList.add('error');
+    nameErr.classList.add('visible');
+    valid = false;
+  } else {
+    nameEl.classList.remove('error');
+    nameErr.classList.remove('visible');
+  }
+
+  const ingEl = document.getElementById('ingredients');
+  const ingErr = document.getElementById('err-ingredients');
+  if (!ingEl.value.trim() && !uploadedLabelBase64) {
+    ingEl.classList.add('error');
+    ingErr.classList.add('visible');
+    valid = false;
+  } else {
+    ingEl.classList.remove('error');
+    ingErr.classList.remove('visible');
+  }
+
+  if (!valid) {
+    // scroll to first error
+    document.querySelector('.error, .input-error.visible')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  // ── End Validation ───────────────────────────────────────
+
+  hide('input-section');
+  show('loading-section');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // animate loading steps
+  const steps = ['ls1','ls2','ls3','ls4','ls5','ls6'];
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i > 0) {
+      document.getElementById(steps[i-1]).classList.remove('active');
+      document.getElementById(steps[i-1]).classList.add('done');
+    }
+    if (i < steps.length) {
+      document.getElementById(steps[i]).classList.add('active');
+      i++;
+    } else {
+      clearInterval(interval);
+    }
+  }, 600);
+
+  // kick off AI analysis
+  if (apiKey && apiKey.startsWith('sk-ant-')) {
+    runClaudeAnalysis(interval);
+  } else {
+    // fallback to mock after animation
+    setTimeout(() => {
+      clearInterval(interval);
+      steps.forEach(s => {
+        document.getElementById(s).classList.remove('active');
+        document.getElementById(s).classList.add('done');
+      });
+      analysisResult = null; // use mock
+      setTimeout(showResults, 400);
+    }, 3800);
+  }
+}
+
+async function runClaudeAnalysis(loadingInterval) {
+  const productName = document.getElementById('product-name').value || '제품명 미입력';
+  const ingredients = document.getElementById('ingredients').value || '';
+  const claims = document.getElementById('claims').value || '';
+  const country = selectedCountry;
+  const countryLabel = country === 'us' ? '미국 (FDA / MoCRA)' : '영국 (OPSS / UK RP / SCPN / CPSR)';
+
+  // Read selected category
+  const activeCatEl = document.querySelector('.tag-grid .tag-btn.active:not(#docs-tags .tag-btn)');
+  const category = activeCatEl ? activeCatEl.textContent.trim() : '미입력';
+
+  // Read owned docs
+  const ownedDocs = Array.from(
+    document.querySelectorAll('#docs-tags .tag-btn.active')
+  ).map(el => el.textContent.trim()).filter(t => t !== '없음');
+  const docsText = ownedDocs.length > 0 ? ownedDocs.join(', ') : '없음';
+
+  // Build message content
+  const contentParts = [];
+
+  // If label image uploaded, include it
+  if (uploadedLabelBase64) {
+    contentParts.push({
+      type: 'image',
+      source: {
+        type: 'base64',
+        media_type: uploadedLabelBase64.mediaType,
+        data: uploadedLabelBase64.data
+      }
+    });
+  }
+
+  contentParts.push({
+    type: 'text',
+    text: buildPrompt(productName, category, ingredients, claims, docsText, countryLabel, country)
+  });
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-opus-4-5',
+        max_tokens: 4000,
+        system: buildSystemPrompt(country),
+        messages: [{ role: 'user', content: contentParts }]
+      })
+    });
+
+    clearInterval(loadingInterval);
+    const steps = ['ls1','ls2','ls3','ls4','ls5','ls6'];
+    steps.forEach(s => {
+      document.getElementById(s).classList.remove('active');
+      document.getElementById(s).classList.add('done');
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error?.message || '알 수 없는 오류');
+    }
+
+    const data = await res.json();
+    const text = data.content[0].text;
+
+    // parse JSON from response
+    const jsonMatch = text.match(/```json\n?([\s\S]*?)\n?```/) || text.match(/(\{[\s\S]*\})/);
+    if (!jsonMatch) throw new Error('응답 파싱 실패');
+    const parsed = JSON.parse(jsonMatch[1]);
+    analysisResult = { [country]: parsed };
+
+    setTimeout(showResults, 400);
+  } catch (err) {
+    clearInterval(loadingInterval);
+    document.getElementById('loading-section').innerHTML = `
+      <div style="text-align:center;padding:60px 24px">
+        <div style="font-size:32px;margin-bottom:16px">⚠️</div>
+        <div style="font-family:'Instrument Serif',serif;font-size:20px;margin-bottom:8px">분석 중 오류가 발생했습니다</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:24px">${err.message}</div>
+        <button class="btn-primary" style="display:inline-block;width:auto;padding:10px 24px" onclick="resetApp()">다시 시도</button>
+      </div>
+    `;
+  }
+}
+
+function buildSystemPrompt(country) {
+  if (country === 'us') {
+    return `You are an expert in US FDA cosmetics regulation (21 CFR, MoCRA 2022). 
+You analyze K-Beauty SKUs for regulatory risk before US market entry.
+Respond ONLY in valid JSON. No markdown text outside the JSON block.
+Be practical and specific. Flag actual risks based on provided data.
+For unknown/uncertain items, use status "pending".`;
+  } else {
+    return `You are an expert in UK cosmetics regulation (OPSS, UK Responsible Person requirements, SCPN, CPSR).
+You analyze K-Beauty SKUs for regulatory risk before UK market entry post-Brexit.
+Respond ONLY in valid JSON. No markdown text outside the JSON block.
+Be practical and specific. Flag actual risks based on provided data.
+For unknown/uncertain items, use status "pending".`;
+  }
+}
+
+function buildPrompt(productName, category, ingredients, claims, ownedDocs, countryLabel, country) {
+  const usSchema = `{
+  "verdict": "fail" | "warn" | "pass",
+  "verdictLabel": "string (Korean)",
+  "summary": "string (1-2 sentences Korean summary)",
+  "stats": {
+    "danger": number,
+    "warning": number,
+    "pass": number,
+    "pending": number
+  },
+  "sections": [
+    {
+      "icon": "emoji",
+      "name": "string",
+      "items": [
+        {
+          "status": "fail" | "warn" | "pass" | "pending",
+          "title": "string (Korean)",
+          "desc": "string (Korean, 1-2 sentences)",
+          "action": "string (Korean, concrete next step) or null",
+          "alt": "string (Korean, alternative suggestion) or null"
+        }
+      ]
+    }
+  ]
+}`;
+
+  return `Analyze this K-Beauty product for ${countryLabel} market entry risk.
+
+Product Name: ${productName}
+Category: ${category}
+Target Market: ${countryLabel}
+${uploadedLabelBase64 ? 'Label Image: [Attached above - analyze for labeling requirements]' : ''}
+
+INGREDIENTS (INCI):
+${ingredients || '(not provided)'}
+
+MARKETING CLAIMS:
+${claims || '(not provided)'}
+
+OWNED DOCUMENTS:
+${ownedDocs}
+- Use this to adjust the regulatory readiness section.
+  If CoA is owned → ingredient concentration checks are more verifiable.
+  If GMP is owned → manufacturing compliance risk is lower.
+  If safety data is owned → safety substantiation readiness is higher.
+  If none → flag all readiness items as pending with higher urgency.
+
+Analyze across these sections (adjust based on category "${category}" — e.g. sunscreen products have OTC drug rules, lip products have different labeling, etc.):
+${country === 'us' ? `1. 성분 안전성 (Ingredient Safety) - FDA 21 CFR 700 prohibited/restricted ingredients
+2. 마케팅 클레임 (Claim Risk) - FDA OTC Drug claim analysis. For category "${category}", flag any category-specific drug claims.
+3. 라벨링 요건 (Label Requirements) - US labeling requirements
+4. MoCRA 준비도 - Facility registration, product listing, safety substantiation, adverse event SOP. Adjust based on owned docs: ${ownedDocs}`
+: `1. 성분 안전성 (Ingredient Safety) - UK Cosmetics Regulation Annex II/III
+2. 마케팅 클레임 (Claim Risk) - OPSS misleading claim analysis for category "${category}"
+3. 라벨링 요건 (UK Label) - UK labeling requirements including UK RP
+4. UK 규제 준비도 (SCPN · CPSR) - UK RP, SCPN notification, CPSR requirements. Adjust based on owned docs: ${ownedDocs}`}
+
+Return ONLY this JSON structure (no other text):
+\`\`\`json
+${usSchema}
+\`\`\`
+
+Rules:
+- verdict "fail" if any "fail" items exist
+- verdict "warn" if only "warn"/"pending" items exist
+- verdict "pass" only if all items pass
+- Be specific about which ingredients are problematic and why
+- For claims, identify exact phrases that are risky
+- Provide concrete actionable steps in Korean
+- Tailor analysis to the specific product category: ${category}`;
+}
+
+function showResults() {
+  hide('loading-section');
+  show('results-section');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const pname = document.getElementById('product-name').value || '제품명';
+  const activeCat = document.querySelector('.tag-grid .tag-btn.active:not(#docs-tags .tag-btn)');
+  const category = activeCat ? activeCat.textContent.trim() : '화장품';
+  const countryLabel = selectedCountry === 'us' ? '🇺🇸 미국 FDA' : '🇬🇧 영국 OPSS';
+  document.getElementById('r-product-name').textContent = pname;
+  document.getElementById('r-product-meta').textContent = `${category} · 입력된 성분 · ${countryLabel}`;
+
+  renderResults(selectedCountry);
+}
+
+function getResultData(country) {
+  // Use real API result if available, otherwise fall back to mock
+  if (analysisResult && analysisResult[country]) {
+    const d = analysisResult[country];
+    const s = d.stats;
+    const total = s.danger + s.warning + s.pass + s.pending;
+    return {
+      verdict: d.verdict,
+      verdictLabel: d.verdictLabel,
+      stats: [
+        { num: s.danger,  label: '위험 이슈',  cls: 'red' },
+        { num: s.warning, label: '주의 이슈',  cls: 'yellow' },
+        { num: s.pass,    label: '성분 통과',  cls: 'green' },
+        { num: s.pending, label: '확인 필요',  cls: 'gray' },
+      ],
+      progressSegs: [
+        { pct: Math.round(s.danger/total*100),  color: '#C0392B' },
+        { pct: Math.round(s.warning/total*100), color: '#E8A020' },
+        { pct: Math.round(s.pass/total*100),    color: '#1E6B3A' },
+        { pct: Math.round(s.pending/total*100), color: '#D8D2C8' },
+      ],
+      progressCount: `위험 ${s.danger} · 주의 ${s.warning} · 통과 ${s.pass} · 미확인 ${s.pending}`,
+      sections: d.sections,
+      isReal: true
+    };
+  }
+  return { ...mockData[country], isReal: false };
+}
+
+function renderResults(country) {
+  const d = getResultData(country);
+
+  // badge indicating real vs mock
+  const sourceTag = d.isReal
+    ? `<span style="font-size:11px;padding:3px 8px;border-radius:10px;background:var(--green-bg);color:var(--green);font-family:'DM Mono',monospace;margin-left:8px">✦ AI 실분석</span>`
+    : `<span style="font-size:11px;padding:3px 8px;border-radius:10px;background:var(--yellow-bg);color:var(--yellow);font-family:'DM Mono',monospace;margin-left:8px">Mock 데이터</span>`;
+
+  const vEl = document.getElementById('r-verdict');
+  vEl.innerHTML = d.verdictLabel + sourceTag;
+  vEl.className = 'verdict-badge ' + d.verdict;
+
+  document.getElementById('r-stats').innerHTML = d.stats.map(s =>
+    `<div class="stat-card"><div class="stat-num ${s.cls}">${s.num}</div><div class="stat-lbl">${s.label}</div></div>`
+  ).join('');
+
+  const total = d.progressSegs.reduce((a,s) => a + s.pct, 0);
+  const segs = d.progressSegs.map(s => ({ ...s, pct: total > 0 ? s.pct : 25 }));
+  document.getElementById('r-progress-count').textContent = d.progressCount;
+  document.getElementById('r-progress-track').innerHTML = segs.map(s =>
+    `<div class="progress-seg" style="width:${s.pct}%;background:${s.color}"></div>`
+  ).join('');
+
+  // Show only the selected country — no tab switching
+  document.getElementById('market-tabs').innerHTML = `
+    <div class="market-tab active">
+      ${country === 'us' ? '🇺🇸 미국 FDA / MoCRA' : '🇬🇧 영국 OPSS / SCPN / CPSR'}
+    </div>
+  `;
+
+  document.getElementById('results-body').innerHTML = d.sections.map(sec => `
+    <div class="section-header">
+      <span class="section-icon">${sec.icon}</span>
+      <span class="section-name">${sec.name}</span>
+      <span class="section-count">${sec.items ? sec.items.length + '건' : ''}</span>
+    </div>
+    ${(sec.items || []).map((item, idx) => {
+      const hasDetail = item.action || item.alt;
+      return `
+      <div class="check-item ${item.status}${hasDetail ? '' : ' no-expand'}"
+           onclick="${hasDetail ? `toggleItem(this)` : ''}">
+        <div class="check-dot ${item.status}">${item.status==='fail'?'✕':item.status==='warn'?'!':item.status==='pass'?'✓':'–'}</div>
+        <div class="check-body">
+          <div class="check-title">${item.title}</div>
+          <div class="check-desc">${item.desc}</div>
+          ${hasDetail ? `
+          <div class="check-detail">
+            ${item.action ? `
+            <div class="detail-row">
+              <span class="detail-label">조치</span>
+              <span class="detail-value action">→ ${item.action}</span>
+            </div>` : ''}
+            ${item.alt ? `
+            <div class="detail-row">
+              <span class="detail-label">제안</span>
+              <span class="detail-value alt">${item.alt}</span>
+            </div>` : ''}
+          </div>` : ''}
+        </div>
+        ${hasDetail ? `<div class="check-arrow">›</div>` : '<div style="width:16px"></div>'}
+      </div>`;
+    }).join('')}
+  `).join('');
+}
+
+function switchTab(country) {
+  // If we only have one country's real data, re-run analysis for the other
+  if (analysisResult && !analysisResult[country] && apiKey) {
+    selectedCountry = country;
+    const pname = document.getElementById('r-product-name').textContent;
+    hide('results-section');
+    // Reset loading UI
+    document.getElementById('loading-section').innerHTML = `
+      <div class="loading-screen active">
+        <div class="loading-ring"></div>
+        <div style="font-family:'Instrument Serif',serif;font-size:22px;margin-bottom:8px">분석 중...</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:24px">${country === 'us' ? '🇺🇸 미국 FDA' : '🇬🇧 영국 OPSS'} 기준으로 재분석합니다</div>
+        <div class="loading-steps" id="loading-steps">
+          <div class="loading-step" id="ls1">전성분 파싱 중...</div>
+          <div class="loading-step" id="ls2">규제기관 DB 대조 중...</div>
+          <div class="loading-step" id="ls3">Drug claim 감지 중...</div>
+          <div class="loading-step" id="ls4">라벨 누락 항목 확인 중...</div>
+          <div class="loading-step" id="ls5">규제 준비도 체크 중...</div>
+          <div class="loading-step" id="ls6">리포트 생성 중...</div>
+        </div>
+      </div>`;
+    show('loading-section');
+    runClaudeAnalysis(null);
+    return;
+  }
+  selectedCountry = country;
+  renderResults(country);
+  const countryLabel = country === 'us' ? '🇺🇸 미국 FDA' : '🇬🇧 영국 OPSS';
+  document.getElementById('r-product-meta').textContent =
+    document.getElementById('r-product-meta').textContent.replace(/[🇺🇸🇬🇧].+$/, countryLabel);
+}
+
+function toggleItem(el) {
+  const isExpanded = el.classList.contains('expanded');
+  // collapse all others in same section
+  el.closest('[id="results-body"]')
+    ?.querySelectorAll('.check-item.expanded')
+    .forEach(item => item.classList.remove('expanded'));
+  if (!isExpanded) el.classList.add('expanded');
+}
+
+function exportPDF() {
+  const pname = document.getElementById('r-product-name').textContent;
+  const countryLabel = selectedCountry === 'us' ? 'US FDA / MoCRA 2022' : 'UK OPSS / SCPN / CPSR';
+  const d = getResultData(selectedCountry);
+  const date = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+  const verdictColor = d.verdict === 'fail' ? '#C0392B' : d.verdict === 'warn' ? '#A0620A' : '#1E6B3A';
+  const verdictBg = d.verdict === 'fail' ? '#FDF0EE' : d.verdict === 'warn' ? '#FDF6EC' : '#EEF7F2';
+
+  const statusDot = (s) => {
+    const colors = { fail:'#C0392B', warn:'#E8A020', pass:'#1E6B3A', pending:'#B0A898' };
+    const labels = { fail:'FAIL', warn:'WARN', pass:'PASS', pending:'TBC' };
+    return `<span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;
+      background:${colors[s]}18;color:${colors[s]};border:1px solid ${colors[s]}44;
+      font-family:monospace;letter-spacing:.04em">${labels[s]||s.toUpperCase()}</span>`;
+  };
+
+  const reportHTML = `<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #1C1810;
+    font-size: 12px; line-height: 1.6; background: #fff; padding: 48px; }
+  
+  .header { display: flex; justify-content: space-between; align-items: flex-start;
+    padding-bottom: 20px; border-bottom: 2px solid #1C1810; margin-bottom: 28px; }
+  .logo { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .logo em { color: #2D4A8A; font-style: italic; }
+  .header-right { text-align: right; font-size: 11px; color: #7A7060; }
+  .header-right strong { display: block; font-size: 13px; color: #1C1810; margin-bottom: 2px; }
+
+  .verdict-box { padding: 16px 20px; border-radius: 8px; margin-bottom: 24px;
+    background: ${verdictBg}; border: 1px solid ${verdictColor}44;
+    display: flex; align-items: center; justify-content: space-between; }
+  .verdict-label { font-size: 18px; font-weight: 700; color: ${verdictColor}; }
+  .verdict-sub { font-size: 11px; color: #7A7060; margin-top: 2px; }
+  .verdict-badge { font-size: 11px; font-weight: 700; padding: 4px 14px;
+    border-radius: 20px; background: ${verdictColor}; color: #fff;
+    font-family: monospace; letter-spacing: .04em; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 28px; }
+  .stat { text-align: center; padding: 12px; border: 1px solid #e8e4dc; border-radius: 8px; }
+  .stat-n { font-size: 24px; font-weight: 700; }
+  .stat-n.red { color: #C0392B; } .stat-n.yellow { color: #A0620A; }
+  .stat-n.green { color: #1E6B3A; } .stat-n.gray { color: #B0A898; }
+  .stat-l { font-size: 10px; color: #7A7060; margin-top: 2px; text-transform: uppercase; letter-spacing: .04em; }
+
+  .section { margin-bottom: 20px; }
+  .section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+    color: #7A7060; padding: 8px 12px; background: #F5F3EE; border-radius: 4px;
+    margin-bottom: 6px; }
+  .item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px;
+    border: 1px solid #e8e4dc; border-radius: 6px; margin-bottom: 5px; page-break-inside: avoid; }
+  .item-left { min-width: 48px; padding-top: 1px; }
+  .item-body { flex: 1; }
+  .item-title { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+  .item-desc { font-size: 11px; color: #7A7060; margin-bottom: 4px; }
+  .item-action { font-size: 11px; color: #2D4A8A; font-weight: 500; }
+  .item-alt { font-size: 11px; color: #2D4A8A; font-style: italic;
+    margin-top: 4px; padding: 4px 8px; background: #E8EDF7; border-radius: 4px; }
+
+  .disclaimer { margin-top: 32px; padding: 12px 14px; background: #FDF6EC;
+    border: 1px solid #E8D5B0; border-radius: 6px; font-size: 10px; color: #A0620A; line-height: 1.6; }
+  .footer { margin-top: 20px; display: flex; justify-content: space-between;
+    font-size: 10px; color: #B0A898; padding-top: 12px; border-top: 1px solid #e8e4dc; }
+
+  @media print {
+    body { padding: 24px; }
+    .item { page-break-inside: avoid; }
+    .section { page-break-inside: avoid; }
+  }
+</style>
+</head><body>
+
+<div class="header">
+  <div>
+    <div class="logo">SKU<em>Check</em></div>
+    <div style="font-size:11px;color:#7A7060;margin-top:4px">Regulatory Risk Report — 1st Screening</div>
+  </div>
+  <div class="header-right">
+    <strong>${pname}</strong>
+    ${countryLabel}<br>
+    ${date}
+  </div>
+</div>
+
+<div class="verdict-box">
+  <div>
+    <div class="verdict-label">${d.verdictLabel}</div>
+    <div class="verdict-sub">AI-based preliminary screening · Not legally binding</div>
+  </div>
+  <div class="verdict-badge">${d.verdict.toUpperCase()}</div>
+</div>
+
+<div class="stats-row">
+  ${d.stats.map(s => `
+    <div class="stat">
+      <div class="stat-n ${s.cls}">${s.num}</div>
+      <div class="stat-l">${s.label}</div>
+    </div>`).join('')}
+</div>
+
+${d.sections.map(sec => `
+  <div class="section">
+    <div class="section-title">${sec.icon} ${sec.name}</div>
+    ${(sec.items||[]).map(item => `
+      <div class="item">
+        <div class="item-left">${statusDot(item.status)}</div>
+        <div class="item-body">
+          <div class="item-title">${item.title}</div>
+          <div class="item-desc">${item.desc}</div>
+          ${item.action ? `<div class="item-action">→ ${item.action}</div>` : ''}
+          ${item.alt    ? `<div class="item-alt">${item.alt}</div>` : ''}
+        </div>
+      </div>`).join('')}
+  </div>`).join('')}
+
+<div class="disclaimer">
+  ⚠ <strong>Disclaimer:</strong> This report is an AI-based preliminary screening tool only. 
+  It has no legal validity and does not constitute regulatory advice. 
+  Final compliance decisions must be made by a qualified regulatory expert 
+  (FDA consultant, UK Responsible Person, or CPSR Safety Assessor).
+</div>
+
+<div class="footer">
+  <span>Generated by SKUCheck · skucheck.kr</span>
+  <span>${pname} · ${countryLabel} · ${date}</span>
+</div>
+
+</body></html>`;
+
+  const win = window.open('', '_blank');
+  win.document.write(reportHTML);
+  win.document.close();
+  setTimeout(() => win.print(), 500);
+}
+
+function resetApp() {
+  hide('results-section');
+  analysisResult = null;
+  uploadedLabelBase64 = null;
+
+  // Reset form fields
+  document.getElementById('product-name').value = '';
+  document.getElementById('product-name').classList.remove('error');
+  document.getElementById('err-name').classList.remove('visible');
+  document.getElementById('ingredients').value = '';
+  document.getElementById('ingredients').classList.remove('error');
+  document.getElementById('err-ingredients').classList.remove('visible');
+  document.getElementById('claims').value = '';
+
+  // Reset label upload zone
+  document.getElementById('label-upload').innerHTML = `
+    <div class="upload-icon">🏷️</div>
+    <div class="upload-label">제품 라벨 이미지를 업로드하세요</div>
+    <div class="upload-sub">AI가 라벨을 읽고 누락 항목을 분석합니다</div>`;
+
+  // Reset tags — deactivate all category tags, keep no docs selected
+  document.querySelectorAll('.tag-grid .tag-btn').forEach(t => t.classList.remove('active'));
+
+  // Reset loading steps
+  ['ls1','ls2','ls3','ls4','ls5','ls6'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active', 'done');
+  });
+
+  // Go back to input (not landing) — faster loop
+  show('input-section');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
