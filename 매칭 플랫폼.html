@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SupportDesk — K-Beauty 지원사업 매칭 플랫폼</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Pretendard:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0E0E0F;
+  --surface: #161618;
+  --surface2: #1E1E21;
+  --surface3: #26262A;
+  --border: rgba(255,255,255,0.07);
+  --border-strong: rgba(255,255,255,0.14);
+  --text: #F0EDE8;
+  --text-muted: #8A8680;
+  --text-faint: #4A4845;
+  --gold: #C9A84C;
+  --gold-light: #E8C97A;
+  --gold-bg: rgba(201,168,76,0.08);
+  --gold-border: rgba(201,168,76,0.25);
+  --green: #4CAF7D;
+  --green-bg: rgba(76,175,125,0.08);
+  --green-border: rgba(76,175,125,0.25);
+  --yellow: #E8A020;
+  --yellow-bg: rgba(232,160,32,0.08);
+  --yellow-border: rgba(232,160,32,0.25);
+  --red: #E05C5C;
+  --red-bg: rgba(224,92,92,0.08);
+  --red-border: rgba(224,92,92,0.25);
+  --blue: #5B8DEF;
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Pretendard', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ── NAV ── */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(14,14,15,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 0.5px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; height: 56px;
+}
+.logo {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 18px; font-weight: 700;
+  color: var(--text); letter-spacing: -0.3px;
+}
+.logo em { color: var(--gold); font-style: normal; }
+.nav-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: .1em;
+  padding: 3px 10px; border-radius: 20px;
+  background: var(--gold-bg); color: var(--gold);
+  border: 0.5px solid var(--gold-border);
+}
+
+/* ── HERO ── */
+.hero {
+  max-width: 680px; margin: 0 auto;
+  padding: 80px 24px 60px;
+  text-align: center;
+}
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: .12em;
+  color: var(--gold); text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: ''; flex: 1; max-width: 60px;
+  height: 0.5px; background: var(--gold-border);
+}
+.hero h1 {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 48px; line-height: 1.2;
+  letter-spacing: -1px; color: var(--text);
+  margin-bottom: 16px;
+}
+.hero h1 em { color: var(--gold); font-style: italic; }
+.hero p {
+  font-size: 15px; color: var(--text-muted);
+  max-width: 480px; margin: 0 auto 36px;
+  line-height: 1.75;
+}
+.hero-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--gold); color: #0E0E0F;
+  padding: 14px 32px; border-radius: var(--radius);
+  font-size: 14px; font-weight: 600;
+  cursor: pointer; border: none;
+  transition: all .2s; letter-spacing: .02em;
+}
+.hero-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+.hero-note {
+  margin-top: 14px;
+  font-size: 12px; color: var(--text-faint);
+  font-family: 'DM Mono', monospace;
+}
+.hero-stats {
+  display: flex; gap: 32px; justify-content: center;
+  margin-top: 48px; padding-top: 32px;
+  border-top: 0.5px solid var(--border);
+}
+.hero-stat-num {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 28px; color: var(--gold); font-weight: 700;
+}
+.hero-stat-lbl { font-size: 11px; color: var(--text-faint); margin-top: 2px; }
+
+/* ── CONTAINER ── */
+.container { max-width: 900px; margin: 0 auto; padding: 0 24px 80px; }
+
+/* ── SECTION TITLE ── */
+.section-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 8px;
+}
+.section-title {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 24px; color: var(--text);
+  margin-bottom: 24px; letter-spacing: -0.5px;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden; margin-bottom: 12px;
+}
+.card-header {
+  padding: 16px 22px;
+  border-bottom: 0.5px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+}
+.step-num {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--gold); color: #0E0E0F;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-family: 'DM Mono', monospace;
+}
+.step-num.done { background: var(--green); }
+.card-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.card-body { padding: 20px 22px; }
+
+/* ── FIELD ── */
+.field-label {
+  font-size: 11px; font-weight: 500; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--text-muted);
+  font-family: 'DM Mono', monospace; margin-bottom: 10px;
+}
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+
+select, input[type=number] {
+  width: 100%; padding: 10px 14px;
+  background: var(--surface2);
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius);
+  color: var(--text); font-size: 13px;
+  font-family: 'Pretendard', sans-serif;
+  outline: none; transition: border-color .15s;
+  appearance: none;
+}
+select:focus, input[type=number]:focus { border-color: var(--gold); }
+select option { background: var(--surface2); }
+
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: '▾'; position: absolute; right: 12px; top: 50%;
+  transform: translateY(-50%); color: var(--text-faint);
+  font-size: 12px; pointer-events: none;
+}
+
+/* ── TAG GRID ── */
+.tag-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.tag-btn {
+  padding: 7px 14px; border-radius: 20px;
+  border: 0.5px solid var(--border-strong);
+  background: var(--surface2); font-size: 12px;
+  cursor: pointer; transition: all .15s;
+  color: var(--text-muted); font-family: 'Pretendard', sans-serif;
+}
+.tag-btn:hover { border-color: var(--gold); color: var(--gold); }
+.tag-btn.active {
+  background: var(--gold-bg);
+  border-color: var(--gold); color: var(--gold); font-weight: 500;
+}
+
+/* ── CTA BTN ── */
+.match-btn {
+  width: 100%; padding: 15px;
+  background: var(--gold); color: #0E0E0F;
+  border: none; border-radius: var(--radius);
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  font-family: 'Pretendard', sans-serif;
+  transition: all .2s; letter-spacing: .02em;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.match-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+/* ── LOADING ── */
+.loading-screen {
+  text-align: center; padding: 80px 24px;
+}
+.loading-ring {
+  width: 48px; height: 48px;
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  margin: 0 auto 24px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-step {
+  font-size: 12px; font-family: 'DM Mono', monospace;
+  color: var(--text-faint); padding: 4px 0; transition: color .3s;
+}
+.loading-step.active { color: var(--gold); }
+.loading-step.done { color: var(--green); }
+
+/* ── RESULTS TOP BAR ── */
+.results-topbar {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap; gap: 12px;
+}
+.user-summary { display: flex; align-items: center; gap: 14px; }
+.user-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: var(--gold-bg); border: 0.5px solid var(--gold-border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.user-name { font-size: 15px; font-weight: 600; }
+.user-meta { font-size: 12px; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+.result-summary {
+  display: flex; gap: 20px;
+}
+.result-count { text-align: center; }
+.result-count-num {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 24px; font-weight: 700;
+}
+.result-count-num.gold { color: var(--gold); }
+.result-count-num.green { color: var(--green); }
+.result-count-num.yellow { color: var(--yellow); }
+.result-count-num.red { color: var(--red); }
+.result-count-lbl { font-size: 10px; color: var(--text-faint); font-family: 'DM Mono', monospace; }
+
+/* ── FILTER TABS ── */
+.filter-tabs {
+  display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.filter-tab {
+  padding: 7px 16px; border-radius: 20px;
+  border: 0.5px solid var(--border-strong);
+  background: var(--surface); font-size: 12px;
+  cursor: pointer; transition: all .15s;
+  color: var(--text-muted); font-family: 'DM Mono', monospace;
+}
+.filter-tab:hover { border-color: var(--gold); color: var(--gold); }
+.filter-tab.active { background: var(--gold-bg); border-color: var(--gold); color: var(--gold); }
+
+/* ── SUPPORT CARD ── */
+.support-card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden; margin-bottom: 10px;
+  transition: border-color .15s;
+  cursor: pointer;
+}
+.support-card:hover { border-color: var(--border-strong); }
+.support-card.best_match { border-left: 3px solid var(--gold); }
+.support-card.eligible   { border-left: 3px solid var(--green); }
+.support-card.partial    { border-left: 3px solid var(--yellow); }
+.support-card.ineligible { border-left: 3px solid var(--text-faint); opacity: .65; }
+.support-card.expanded   { border-color: var(--gold-border); }
+
+.sc-header {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px 20px;
+}
+.sc-status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0; margin-top: 6px;
+}
+.sc-status-dot.best_match { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+.sc-status-dot.eligible   { background: var(--green); }
+.sc-status-dot.partial    { background: var(--yellow); }
+.sc-status-dot.ineligible { background: var(--text-faint); }
+
+.sc-main { flex: 1; }
+.sc-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 5px; }
+.sc-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.sc-agency-badge {
+  font-size: 10px; padding: 2px 8px; border-radius: 10px;
+  font-family: 'DM Mono', monospace; letter-spacing: .04em;
+}
+.sc-agency-badge.national { background: rgba(91,141,239,0.12); color: var(--blue); border: 0.5px solid rgba(91,141,239,0.25); }
+.sc-agency-badge.sme      { background: var(--green-bg); color: var(--green); border: 0.5px solid var(--green-border); }
+.sc-agency-badge.local    { background: rgba(180,140,220,0.12); color: #B48CDC; border: 0.5px solid rgba(180,140,220,0.25); }
+
+.sc-desc { font-size: 13px; color: var(--text-muted); line-height: 1.55; margin-bottom: 8px; }
+.sc-meta-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.sc-meta {
+  font-size: 11px; font-family: 'DM Mono', monospace;
+  color: var(--text-faint); display: flex; align-items: center; gap: 5px;
+}
+.sc-meta.deadline { color: var(--yellow); }
+.sc-meta.deadline.urgent { color: var(--red); animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+.sc-right {
+  display: flex; flex-direction: column; align-items: flex-end;
+  gap: 8px; flex-shrink: 0;
+}
+.sc-amount {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: 18px; font-weight: 700; color: var(--gold);
+}
+.sc-amount-sub { font-size: 10px; color: var(--text-faint); text-align: right; }
+.sc-status-badge {
+  font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 10px;
+  font-family: 'DM Mono', monospace; letter-spacing: .04em;
+}
+.sc-status-badge.best_match { background: var(--gold-bg); color: var(--gold); border: 0.5px solid var(--gold-border); }
+.sc-status-badge.eligible   { background: var(--green-bg); color: var(--green); border: 0.5px solid var(--green-border); }
+.sc-status-badge.partial    { background: var(--yellow-bg); color: var(--yellow); border: 0.5px solid var(--yellow-border); }
+.sc-status-badge.ineligible { background: rgba(255,255,255,0.04); color: var(--text-faint); border: 0.5px solid var(--border); }
+
+.sc-score-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 20px 12px 42px;
+}
+.score-track {
+  flex: 1; height: 3px; background: var(--surface3); border-radius: 2px; overflow: hidden;
+}
+.score-fill { height: 100%; border-radius: 2px; transition: width .6s ease; }
+.score-label { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--text-faint); white-space: nowrap; }
+
+/* ── EXPAND DETAIL ── */
+.sc-detail {
+  display: none;
+  border-top: 0.5px solid var(--border);
+  padding: 20px 22px;
+}
+.support-card.expanded .sc-detail { display: block; }
+
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.detail-section { }
+.detail-section-title {
+  font-size: 10px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--text-faint);
+  font-family: 'DM Mono', monospace; margin-bottom: 10px;
+}
+.condition-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 12px; margin-bottom: 6px;
+}
+.cond-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.cond-dot.pass { background: var(--green); }
+.cond-dot.fail { background: var(--red); }
+.cond-dot.warn { background: var(--yellow); }
+.cond-dot.na   { background: var(--text-faint); }
+.cond-text { color: var(--text-muted); line-height: 1.5; }
+.cond-text.fail { color: var(--red); }
+
+.ai-reason {
+  padding: 14px 16px;
+  background: var(--surface2);
+  border-radius: var(--radius);
+  border-left: 2px solid var(--gold);
+  font-size: 13px; color: var(--text-muted);
+  line-height: 1.65; margin-bottom: 16px;
+}
+.ai-reason-label {
+  font-size: 10px; font-family: 'DM Mono', monospace;
+  color: var(--gold); margin-bottom: 6px; letter-spacing: .06em;
+}
+
+.apply-steps { margin-bottom: 16px; }
+.apply-step {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 10px 0; border-bottom: 0.5px solid var(--border);
+}
+.apply-step:last-child { border-bottom: none; }
+.apply-step-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--surface3); color: var(--text-muted);
+  font-size: 11px; font-family: 'DM Mono', monospace;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.apply-step-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+.apply-step-desc { font-size: 12px; color: var(--text-muted); }
+
+.detail-footer { display: flex; gap: 8px; }
+.btn-apply {
+  flex: 1; padding: 11px;
+  background: var(--gold); color: #0E0E0F;
+  border: none; border-radius: var(--radius);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: 'Pretendard', sans-serif;
+  transition: all .15s;
+}
+.btn-apply:hover { background: var(--gold-light); }
+.btn-secondary {
+  padding: 11px 16px;
+  background: transparent;
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius);
+  font-size: 13px; color: var(--text-muted);
+  cursor: pointer; font-family: 'Pretendard', sans-serif;
+  transition: all .15s;
+}
+.btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+.alt-suggestion {
+  margin-top: 12px; padding: 12px 14px;
+  background: var(--gold-bg); border-radius: var(--radius);
+  border: 0.5px solid var(--gold-border);
+  font-size: 12px; color: var(--gold);
+}
+.alt-suggestion strong { font-weight: 600; display: block; margin-bottom: 4px; }
+
+/* ── UTILS ── */
+.hidden { display: none !important; }
+.divider { height: 0.5px; background: var(--border); margin: 20px 0; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .hero h1 { font-size: 34px; }
+  .field-row, .field-row-3 { grid-template-columns: 1fr; }
+  .detail-grid { grid-template-columns: 1fr; }
+  .result-summary { gap: 12px; }
+  .sc-right { align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="logo">Support<em>Desk</em></div>
+  <div class="nav-badge">K-BEAUTY</div>
+</nav>
+
+<!-- ── LANDING ── -->
+<div id="landing">
+  <div class="hero">
+    <div class="hero-eyebrow">K-Beauty 지원사업 매칭 플랫폼</div>
+    <h1>받을 수 있는<br>지원사업을<br><em>찾아드립니다</em></h1>
+    <p>KOTRA·중기부·지자체 지원사업을 내 브랜드 조건에 맞게 자동 매칭하고, 못 받는 이유와 신청 가이드까지 알려드려요.</p>
+    <button class="hero-cta" onclick="showInput()">
+      지금 매칭 시작하기 →
+    </button>
+    <div class="hero-note">회원가입 불필요 · 무료</div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">47개</div>
+        <div class="hero-stat-lbl">등록된 지원사업</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">3개</div>
+        <div class="hero-stat-lbl">지원 기관</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">최대 5억</div>
+        <div class="hero-stat-lbl">지원 규모</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── INPUT ── -->
+<div id="input-section" class="container hidden">
+
+  <div style="margin-bottom:28px">
+    <div class="section-eyebrow">Step 1 of 1</div>
+    <div class="section-title">브랜드 조건을 입력해주세요</div>
+  </div>
+
+  <!-- 기업 정보 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="step-num">1</div>
+      <div class="card-title">기업 기본 정보</div>
+    </div>
+    <div class="card-body">
+      <div class="field-row">
+        <div>
+          <div class="field-label">연 매출 규모</div>
+          <div class="select-wrap">
+            <select id="revenue">
+              <option value="0">1억 미만</option>
+              <option value="100000000">1억 ~ 3억</option>
+              <option value="300000000" selected>3억 ~ 10억</option>
+              <option value="1000000000">10억 ~ 50억</option>
+              <option value="5000000000">50억 이상</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">직원 수</div>
+          <div class="select-wrap">
+            <select id="employees">
+              <option value="1">1~5명</option>
+              <option value="5" selected>5~10명</option>
+              <option value="10">10~30명</option>
+              <option value="30">30~50명</option>
+              <option value="50">50명 이상</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div>
+          <div class="field-label">업력</div>
+          <div class="select-wrap">
+            <select id="business_years">
+              <option value="0">1년 미만</option>
+              <option value="1" selected>1~3년</option>
+              <option value="3">3~5년</option>
+              <option value="5">5~7년</option>
+              <option value="7">7년 이상</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">소재지</div>
+          <div class="select-wrap">
+            <select id="region">
+              <option value="서울" selected>서울</option>
+              <option value="경기">경기</option>
+              <option value="부산">부산</option>
+              <option value="인천">인천</option>
+              <option value="대구">대구</option>
+              <option value="기타">기타 지역</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 제품 정보 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="step-num">2</div>
+      <div class="card-title">제품 정보</div>
+    </div>
+    <div class="card-body">
+      <div class="field-row-3">
+        <div>
+          <div class="field-label">SKU 수</div>
+          <div class="select-wrap">
+            <select id="sku_count">
+              <option value="1">1~3개</option>
+              <option value="3" selected>3~10개</option>
+              <option value="10">10~30개</option>
+              <option value="30">30개 이상</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">MOQ</div>
+          <div class="select-wrap">
+            <select id="moq">
+              <option value="100" selected>100개 이하</option>
+              <option value="500">100~500개</option>
+              <option value="1000">500~1,000개</option>
+              <option value="5000">1,000개 이상</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">제품 카테고리</div>
+          <div class="select-wrap">
+            <select id="category">
+              <option value="세럼" selected>세럼</option>
+              <option value="선크림">선크림</option>
+              <option value="토너">토너</option>
+              <option value="립/색조">립/색조</option>
+              <option value="클렌저">클렌저</option>
+              <option value="기타">기타</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 해외 진출 정보 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="step-num">3</div>
+      <div class="card-title">해외 진출 정보</div>
+    </div>
+    <div class="card-body">
+      <div class="field-label">타겟 국가 (복수 선택 가능)</div>
+      <div class="tag-grid" id="country-tags">
+        <div class="tag-btn active" onclick="toggleTag(this)">🇺🇸 미국</div>
+        <div class="tag-btn" onclick="toggleTag(this)">🇬🇧 영국</div>
+        <div class="tag-btn" onclick="toggleTag(this)">🇯🇵 일본</div>
+        <div class="tag-btn" onclick="toggleTag(this)">🇨🇳 중국</div>
+        <div class="tag-btn" onclick="toggleTag(this)">🇸🇬 동남아</div>
+        <div class="tag-btn" onclick="toggleTag(this)">기타</div>
+      </div>
+      <div class="field-label">판매 채널</div>
+      <div class="tag-grid" id="channel-tags">
+        <div class="tag-btn active" onclick="toggleTag(this)">아마존</div>
+        <div class="tag-btn" onclick="toggleTag(this)">세포라</div>
+        <div class="tag-btn" onclick="toggleTag(this)">자사몰</div>
+        <div class="tag-btn" onclick="toggleTag(this)">도매/B2B</div>
+        <div class="tag-btn" onclick="toggleTag(this)">오프라인 유통</div>
+        <div class="tag-btn" onclick="toggleTag(this)">SNS 커머스</div>
+      </div>
+      <div class="field-label">수출 경험</div>
+      <div class="tag-grid">
+        <div class="tag-btn active" id="export-no" onclick="selectExport('no')">수출 경험 없음</div>
+        <div class="tag-btn" id="export-yes" onclick="selectExport('yes')">수출 경험 있음</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 보유 인증/서류 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="step-num">4</div>
+      <div class="card-title">보유 인증 및 서류</div>
+    </div>
+    <div class="card-body">
+      <div class="field-label">현재 보유 중인 항목 (해당 모두 선택)</div>
+      <div class="tag-grid" id="cert-tags">
+        <div class="tag-btn" onclick="toggleTag(this)">GMP 인증</div>
+        <div class="tag-btn" onclick="toggleTag(this)">ISO 22716</div>
+        <div class="tag-btn" onclick="toggleTag(this)">FDA 등록</div>
+        <div class="tag-btn" onclick="toggleTag(this)">CoA (성적서)</div>
+        <div class="tag-btn" onclick="toggleTag(this)">안전성 자료</div>
+        <div class="tag-btn" onclick="toggleTag(this)">영문 라벨</div>
+        <div class="tag-btn" onclick="toggleTag(this)">없음</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="match-btn" onclick="startMatching()">
+    <span>✦</span>
+    <span>지원사업 매칭 시작</span>
+  </button>
+
+</div>
+
+<!-- ── LOADING ── -->
+<div id="loading-section" class="container hidden">
+  <div class="loading-screen">
+    <div class="loading-ring"></div>
+    <div style="font-family:'Nanum Myeongjo',serif;font-size:22px;margin-bottom:8px">매칭 중...</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:28px">조건에 맞는 지원사업을 찾고 있어요</div>
+    <div id="loading-steps">
+      <div class="loading-step" id="ls1">기업 규모 조건 대조 중...</div>
+      <div class="loading-step" id="ls2">제품·채널 조건 필터링 중...</div>
+      <div class="loading-step" id="ls3">국가·인증 조건 확인 중...</div>
+      <div class="loading-step" id="ls4">지원 자격 점수 계산 중...</div>
+      <div class="loading-step" id="ls5">AI 매칭 이유 생성 중...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── RESULTS ── -->
+<div id="results-section" class="container hidden">
+
+  <div class="results-topbar" id="results-topbar"></div>
+
+  <div class="filter-tabs" id="filter-tabs"></div>
+
+  <div id="results-list"></div>
+
+  <div style="display:flex;gap:10px;margin-top:8px">
+    <button class="btn-apply" onclick="resetApp()" style="flex:none;padding:11px 20px;font-size:13px">← 조건 다시 입력</button>
+  </div>
+</div>
+
+<script>
+// ── SUPPORT DB (하드코딩 mock) ──────────────────────────────────
+const SUPPORTS = [
+  {
+    id: "kotra-export-voucher",
+    name: "수출바우처 사업 (일반형)",
+    agency: "KOTRA",
+    agency_type: "national",
+    support_type: "voucher",
+    description: "해외 마케팅·인증·라벨링·전시회 참가 비용의 최대 70% 지원. K-뷰티 브랜드 해외 진출 핵심 바우처.",
+    max_amount: 50000000,
+    support_ratio: 70,
+    url: "https://www.exportvoucher.com",
+    deadline: "2025-11-30",
+    is_recurring: true,
+    recruit_start: "2025-09-01",
+    period_note: "연 1회, 매년 9~11월 모집",
+    conditions: {
+      max_revenue: 5000000000,
+      min_revenue: null,
+      max_employees: 50,
+      min_employees: null,
+      min_business_years: 1,
+      target_countries: ["all"],
+      channels: ["all"],
+      requires_export_experience: false,
+      required_certs: [],
+      required_regions: null,
+    },
+    apply_steps: [
+      { step:1, title:"수출바우처 포털 회원가입", desc:"exportvoucher.com 접속 → 기업 회원 가입" },
+      { step:2, title:"사업계획서 작성", desc:"해외 마케팅 계획 및 예산 계획서 준비 (양식 다운로드)" },
+      { step:3, title:"온라인 신청 제출", desc:"서류 첨부: 사업자등록증, 최근 2년 재무제표" },
+      { step:4, title:"심사 및 선정 발표", desc:"서류심사 + 발표심사, 약 4주 소요" },
+    ],
+    tags: ["마케팅","인증비용","라벨링","전시회"],
+    reasons: {
+      best_match: "매출·직원 수·업력 모든 조건 충족. 수출 경험 없어도 신청 가능한 핵심 바우처입니다.",
+      eligible: "기본 자격 조건을 충족합니다. GMP 인증 보유 시 심사에서 가산점을 받을 수 있어요.",
+      partial: "일부 조건이 아쉽지만 신청은 가능합니다. 사업계획서 완성도가 당락을 결정합니다.",
+      ineligible: "현재 매출 또는 직원 수가 기준을 초과합니다. 중견기업 대상 수출바우처(플러스형)를 확인해보세요.",
+    }
+  },
+  {
+    id: "kotra-kbeauty-export",
+    name: "K-뷰티 해외전시회 참가 지원",
+    agency: "KOTRA",
+    agency_type: "national",
+    support_type: "exhibition",
+    description: "Cosmoprof, Beauty World 등 해외 주요 뷰티 전시회 참가비·부스비·항공비 지원. K-뷰티 전용 단체관 운영.",
+    max_amount: 10000000,
+    support_ratio: 60,
+    url: "https://www.kotra.or.kr",
+    deadline: "2025-12-15",
+    is_recurring: true,
+    recruit_start: "2025-10-01",
+    period_note: "전시회별 상이, 연 2~4회 모집",
+    conditions: {
+      max_revenue: 3000000000,
+      min_revenue: null,
+      max_employees: 30,
+      min_employees: null,
+      min_business_years: 0,
+      target_countries: ["us","uk","eu"],
+      channels: ["all"],
+      requires_export_experience: false,
+      required_certs: [],
+      required_regions: null,
+    },
+    apply_steps: [
+      { step:1, title:"KOTRA 무역관 온라인 신청", desc:"kotra.or.kr → 사업공고 → K-뷰티 전시회 검색" },
+      { step:2, title:"참가 신청서 제출", desc:"브랜드 소개서, 제품 카탈로그 (영문) 필수 첨부" },
+      { step:3, title:"선정 후 사전 교육", desc:"해외 바이어 미팅 준비 교육 참여 (온라인 가능)" },
+      { step:4, title:"전시회 참가 및 정산", desc:"참가 후 30일 내 비용 정산 신청" },
+    ],
+    tags: ["전시회","바이어발굴","미국","영국"],
+    reasons: {
+      best_match: "미국·영국 타겟 + 아마존 채널 조합에 최적. Cosmoprof NA 단체관 참가로 바이어 접점 극대화.",
+      eligible: "조건 충족. 영문 브랜드 카탈로그 사전 준비를 권장합니다.",
+      partial: "타겟 국가 조건은 맞지만 매출 규모를 확인해보세요.",
+      ineligible: "현재 조건에서 해당 전시회 지원 대상이 아닙니다.",
+    }
+  },
+  {
+    id: "sme-startup-export",
+    name: "초기 수출기업 육성 지원",
+    agency: "중소벤처기업부",
+    agency_type: "sme",
+    support_type: "consulting",
+    description: "수출 경험이 없는 내수 기업의 첫 수출 도전을 위한 컨설팅·바이어 매칭·샘플 제작비 지원.",
+    max_amount: 20000000,
+    support_ratio: 80,
+    url: "https://www.mss.go.kr",
+    deadline: "2025-10-31",
+    is_recurring: true,
+    recruit_start: "2025-08-01",
+    period_note: "연 1회, 매년 8~10월 모집",
+    conditions: {
+      max_revenue: 1000000000,
+      min_revenue: null,
+      max_employees: 20,
+      min_employees: null,
+      min_business_years: 0,
+      target_countries: ["all"],
+      channels: ["all"],
+      requires_export_experience: false,
+      required_certs: [],
+      required_regions: null,
+    },
+    apply_steps: [
+      { step:1, title:"중소기업 수출지원센터 신청", desc:"exportcenter.go.kr 접속 → 회원가입 → 신청" },
+      { step:2, title:"수출 역량 진단", desc:"온라인 진단 설문 (약 20분 소요)" },
+      { step:3, title:"전담 멘토 배정", desc:"수출 전문 멘토와 1:1 컨설팅 (월 2회, 6개월)" },
+      { step:4, title:"바이어 매칭 프로그램", desc:"해외 바이어 온라인 상담회 참여 기회 제공" },
+    ],
+    tags: ["첫수출","컨설팅","바이어매칭","샘플비"],
+    reasons: {
+      best_match: "수출 경험 없음 + 소규모 브랜드에 완벽히 맞는 지원입니다. 최우선 신청을 권장해요.",
+      eligible: "수출 초기 기업을 위한 지원. 전담 멘토링 프로그램이 포함되어 있어요.",
+      partial: "매출 조건은 통과. 직원 수를 확인해보세요.",
+      ineligible: "이미 수출 경험이 있거나 기업 규모가 초과합니다.",
+    }
+  },
+  {
+    id: "sme-rd-support",
+    name: "중소기업 R&D 지원 (화장품 소재)",
+    agency: "중소벤처기업부",
+    agency_type: "sme",
+    support_type: "rd",
+    description: "K-뷰티 핵심 성분·원료 개발 R&D 비용 최대 50% 지원. 특허출원 비용 포함.",
+    max_amount: 100000000,
+    support_ratio: 50,
+    url: "https://www.smtech.go.kr",
+    deadline: "2025-09-30",
+    is_recurring: true,
+    recruit_start: "2025-07-01",
+    period_note: "상반기/하반기 연 2회 모집",
+    conditions: {
+      max_revenue: 3000000000,
+      min_revenue: null,
+      max_employees: 50,
+      min_employees: null,
+      min_business_years: 1,
+      target_countries: ["all"],
+      channels: ["all"],
+      requires_export_experience: false,
+      required_certs: ["GMP 인증"],
+      required_regions: null,
+    },
+    apply_steps: [
+      { step:1, title:"SMTECH 포털 신청", desc:"smtech.go.kr → 공고 검색 → 화장품 소재 R&D" },
+      { step:2, title:"기술개발 계획서 작성", desc:"개발 목표·방법·기대효과 상세 기술 (20~30페이지)" },
+      { step:3, title:"현장 심사", desc:"전문가 심사단 현장 방문 (2~3시간)" },
+      { step:4, title:"협약 체결 및 개발 착수", desc:"협약 후 1년 내 개발 완료 및 실적 보고" },
+    ],
+    tags: ["R&D","소재개발","특허","GMP"],
+    reasons: {
+      best_match: "GMP 인증 보유 + 소재 개발 의지가 있다면 최우선 지원입니다. 지원금 규모가 가장 큽니다.",
+      eligible: "조건 충족. 기술개발 계획서 완성도가 핵심입니다. 전문가 컨설팅을 먼저 받으세요.",
+      partial: "GMP 인증이 없으면 감점 요인이 됩니다. 인증 취득 후 하반기 지원을 노려보세요.",
+      ineligible: "GMP 인증이 필수입니다. 인증 취득 후 재신청하세요.",
+    }
+  },
+  {
+    id: "seoul-startup-global",
+    name: "서울 스타트업 글로벌 진출 지원",
+    agency: "서울시",
+    agency_type: "local",
+    region: "서울",
+    support_type: "subsidy",
+    description: "서울 소재 뷰티 스타트업의 글로벌 진출 바우처. 해외 법인설립·현지 마케팅·규제컨설팅 비용 지원.",
+    max_amount: 30000000,
+    support_ratio: 70,
+    url: "https://www.seoulsbdc.or.kr",
+    deadline: "2025-10-15",
+    is_recurring: true,
+    recruit_start: "2025-09-01",
+    period_note: "연 1회, 서울 소재 기업 한정",
+    conditions: {
+      max_revenue: 500000000,
+      min_revenue: null,
+      max_employees: 10,
+      min_employees: null,
+      min_business_years: 0,
+      target_countries: ["all"],
+      channels: ["all"],
+      requires_export_experience: false,
+      required_certs: [],
+      required_regions: ["서울"],
+    },
+    apply_steps: [
+      { step:1, title:"서울산업진흥원(SBA) 신청", desc:"seoulsbdc.or.kr → 글로벌 지원 사업 신청" },
+      { step:2, title:"사업계획서 및 IR 자료 제출", desc:"글로벌 진출 계획 + 제품 소개 자료 (영문)" },
+      { step:3, title:"PT 심사", desc:"서울시 지원 심사 위원회 발표 (15분)" },
+      { step:4, title:"협약 후 바우처 지급", desc:"선정 시 분기별 집행 보고 필요" },
+    ],
+    tags: ["서울","스타트업","글로벌","바우처"],
+    reasons: {
+      best_match: "서울 소재 + 소규모 브랜드에 딱 맞는 지역 특화 지원입니다. 경쟁률이 국가 지원보다 낮아요.",
+      eligible: "서울 소재 조건 충족. 규제컨설팅 비용으로 활용하면 SKUCheck와 시너지가 납니다.",
+      partial: "서울 소재 조건은 맞지만 매출 상한을 확인하세요.",
+      ineligible: "서울 소재 기업만 신청 가능합니다. 소재지별 지자체 지원을 확인하세요.",
+    }
+  },
+  {
+    id: "kita-cert-support",
+    name: "수출인증 획득 지원 (FDA·CE·GMP)",
+    agency: "KITA",
+    agency_type: "national",
+    support_type: "voucher",
+    description: "FDA MoCRA 등록, UK RP 지정, GMP 인증 취득 비용의 최대 70% 지원. K-뷰티 해외 규제 대응 핵심.",
+    max_amount: 15000000,
+    support_ratio: 70,
+    url: "https://www.kita.net",
+    deadline: "2025-12-31",
+    is_recurring: true,
+    recruit_start: "2025-01-01",
+    period_note: "연중 상시 접수",
+    conditions: {
+      max_revenue: 5000000000,
+      min_revenue: null,
+      max_employees: 50,
+      min_employees: null,
+      min_business_years: 0,
+      target_countries: ["us","uk"],
+      channels: ["all"],
+      requires_export_experience: false,
+      required_certs: [],
+      required_regions: null,
+    },
+    apply_steps: [
+      { step:1, title:"KITA 무역인증 포털 신청", desc:"kita.net → 인증지원 → 수출인증 획득지원" },
+      { step:2, title:"인증 취득 계획서 제출", desc:"어떤 인증을 어느 기관에서 취득할지 명시" },
+      { step:3, title:"심사 후 바우처 발급", desc:"2~3주 소요. 바우처로 인증 비용 직접 결제" },
+      { step:4, title:"인증 취득 후 실적 보고", desc:"인증서 사본 제출로 지원금 최종 정산" },
+    ],
+    tags: ["FDA","GMP","인증","UK RP","규제"],
+    reasons: {
+      best_match: "미국·영국 타겟 브랜드에 최적. FDA MoCRA 등록비·UK RP 비용을 이 바우처로 해결하세요.",
+      eligible: "미국 또는 영국 진출 조건 충족. 연중 상시 접수라 언제든 신청 가능해요.",
+      partial: "타겟 국가 조건이 일부 맞습니다. 미국·영국 외 국가는 별도 인증 지원을 확인하세요.",
+      ineligible: "미국·영국 진출을 타겟으로 하는 기업만 신청 가능합니다.",
+    }
+  },
+];
+
+// ── STATE ───────────────────────────────────────────────────────
+let userInput = {};
+let matchResults = [];
+let currentFilter = 'all';
+let hasExportExp = false;
+
+// ── UI HELPERS ──────────────────────────────────────────────────
+function show(id) { document.getElementById(id).classList.remove('hidden'); }
+function hide(id) { document.getElementById(id).classList.add('hidden'); }
+function showInput() { hide('landing'); show('input-section'); window.scrollTo({top:0,behavior:'smooth'}); }
+
+function toggleTag(el) { el.classList.toggle('active'); }
+function selectExport(val) {
+  hasExportExp = val === 'yes';
+  document.getElementById('export-yes').classList.toggle('active', val==='yes');
+  document.getElementById('export-no').classList.toggle('active', val==='no');
+}
+
+// ── COLLECT INPUT ───────────────────────────────────────────────
+function collectInput() {
+  const revenueMap = {'0':50000000,'100000000':200000000,'300000000':600000000,'1000000000':3000000000,'5000000000':10000000000};
+  const empMap = {'1':3,'5':7,'10':20,'30':40,'50':80};
+  const yearMap = {'0':0,'1':2,'3':4,'5':6,'7':10};
+  const skuMap = {'1':2,'3':7,'10':20,'30':50};
+  const moqMap = {'100':100,'500':300,'1000':750,'5000':3000};
+
+  const revVal = document.getElementById('revenue').value;
+  const empVal = document.getElementById('employees').value;
+  const yearVal = document.getElementById('business_years').value;
+  const skuVal = document.getElementById('sku_count').value;
+  const moqVal = document.getElementById('moq').value;
+
+  const countries = Array.from(document.querySelectorAll('#country-tags .tag-btn.active')).map(e=>e.textContent.trim().replace(/^[🇺🇸🇬🇧🇯🇵🇨🇳🇸🇬]\s*/,''));
+  const channels = Array.from(document.querySelectorAll('#channel-tags .tag-btn.active')).map(e=>e.textContent.trim());
+  const certs = Array.from(document.querySelectorAll('#cert-tags .tag-btn.active')).map(e=>e.textContent.trim());
+
+  return {
+    revenue: revenueMap[revVal] || 600000000,
+    employees: empMap[empVal] || 7,
+    business_years: yearMap[yearVal] || 2,
+    sku_count: skuMap[skuVal] || 7,
+    moq: moqMap[moqVal] || 100,
+    category: document.getElementById('category').value,
+    region: document.getElementById('region').value,
+    target_countries: countries,
+    channels: channels,
+    has_export_experience: hasExportExp,
+    certifications: certs,
+  };
+}
+
+// ── MATCHING ENGINE ─────────────────────────────────────────────
+function hardFilter(support, user) {
+  const c = support.conditions;
+  if (c.max_revenue && user.revenue > c.max_revenue) return false;
+  if (c.min_revenue && user.revenue < c.min_revenue) return false;
+  if (c.max_employees && user.employees > c.max_employees) return false;
+  if (c.min_employees && user.employees < c.min_employees) return false;
+  if (c.min_business_years && user.business_years < c.min_business_years) return false;
+  if (c.required_regions && !c.required_regions.includes(user.region)) return false;
+  if (c.requires_export_experience && !user.has_export_experience) return false;
+  if (c.required_certs && c.required_certs.length > 0) {
+    const missing = c.required_certs.filter(cert => !user.certifications.includes(cert));
+    if (missing.length > 0) return { pass: false, missing };
+  }
+  return true;
+}
+
+function scoreMatch(support, user) {
+  const c = support.conditions;
+  let score = 0;
+
+  // 매출 점수 (30%)
+  const revScore = c.max_revenue ? Math.max(0, 1 - (user.revenue / c.max_revenue) * 0.5) : 1;
+  score += revScore * 30;
+
+  // 국가 점수 (25%)
+  if (c.target_countries[0] === 'all') {
+    score += 25;
+  } else {
+    const countryKeyMap = {'미국':'us','영국':'uk','일본':'jp','중국':'cn','동남아':'sea'};
+    const userKeys = user.target_countries.map(c => countryKeyMap[c] || c.toLowerCase());
+    const overlap = c.target_countries.filter(t => userKeys.includes(t));
+    score += (overlap.length / c.target_countries.length) * 25;
+  }
+
+  // 업력 점수 (15%)
+  score += (user.business_years >= (c.min_business_years || 0)) ? 15 : 5;
+
+  // 인증 보유 가산점 (15%)
+  const prefCerts = ['GMP 인증','ISO 22716','FDA 등록'];
+  const hasPref = prefCerts.some(cert => user.certifications.includes(cert));
+  score += hasPref ? 15 : 5;
+
+  // 수출경험 가산점 (15%)
+  score += user.has_export_experience ? 15 : 8;
+
+  return Math.round(score);
+}
+
+function getStatus(support, user) {
+  const filterResult = hardFilter(support, user);
+
+  if (filterResult !== true) {
+    return { status: 'ineligible', score: 0, filterResult };
+  }
+  const score = scoreMatch(support, user);
+  if (score >= 80) return { status: 'best_match', score };
+  if (score >= 60) return { status: 'eligible', score };
+  return { status: 'partial', score };
+}
+
+function matchAll(user) {
+  return SUPPORTS.map(support => {
+    const { status, score, filterResult } = getStatus(support, user);
+    return { ...support, status, score, filterResult };
+  }).sort((a, b) => {
+    const order = { best_match:0, eligible:1, partial:2, ineligible:3 };
+    return (order[a.status] - order[b.status]) || (b.score - a.score);
+  });
+}
+
+// ── FORMAT HELPERS ──────────────────────────────────────────────
+function formatAmount(n) {
+  if (n >= 100000000) return `최대 ${n/100000000}억원`;
+  return `최대 ${(n/10000).toLocaleString()}만원`;
+}
+
+function dDay(deadline) {
+  const today = new Date();
+  const d = new Date(deadline);
+  const diff = Math.ceil((d - today) / (1000*60*60*24));
+  if (diff < 0) return { label: '마감', urgent: true };
+  if (diff === 0) return { label: 'D-Day', urgent: true };
+  if (diff <= 14) return { label: `D-${diff}`, urgent: true };
+  return { label: `D-${diff}`, urgent: false };
+}
+
+function agencyLabel(type) {
+  return { national:'국가기관', sme:'중소기업지원', local:'지자체' }[type] || type;
+}
+
+function statusLabel(s) {
+  return { best_match:'✦ 최적매칭', eligible:'✓ 신청가능', partial:'△ 조건일부미충족', ineligible:'✕ 해당없음' }[s] || s;
+}
+
+function getAiReason(support, user, status) {
+  return support.reasons?.[status] || '조건을 분석 중입니다.';
+}
+
+function getConditionItems(support, user, filterResult) {
+  const c = support.conditions;
+  const items = [];
+
+  items.push({
+    status: (c.max_revenue ? user.revenue <= c.max_revenue : true) ? 'pass' : 'fail',
+    text: `매출 조건: ${c.max_revenue ? (c.max_revenue/100000000)+'억 이하' : '제한없음'} (현재 ${(user.revenue/100000000).toFixed(1)}억)`
+  });
+  items.push({
+    status: (c.max_employees ? user.employees <= c.max_employees : true) ? 'pass' : 'fail',
+    text: `직원 수: ${c.max_employees ? c.max_employees+'명 이하' : '제한없음'} (현재 ${user.employees}명)`
+  });
+  items.push({
+    status: (c.min_business_years ? user.business_years >= c.min_business_years : true) ? 'pass' : 'fail',
+    text: `업력: ${c.min_business_years ? c.min_business_years+'년 이상' : '제한없음'} (현재 ${user.business_years}년)`
+  });
+  if (c.required_regions) {
+    items.push({
+      status: c.required_regions.includes(user.region) ? 'pass' : 'fail',
+      text: `소재지: ${c.required_regions.join('/')} 한정 (현재 ${user.region})`
+    });
+  }
+  if (c.required_certs && c.required_certs.length > 0) {
+    const missing = c.required_certs.filter(cert => !user.certifications.includes(cert));
+    items.push({
+      status: missing.length === 0 ? 'pass' : 'fail',
+      text: `필수 인증: ${c.required_certs.join(', ')}${missing.length ? ` (미보유: ${missing.join(', ')})` : ''}`
+    });
+  }
+  return items;
+}
+
+// ── RENDER ──────────────────────────────────────────────────────
+function renderTopbar(results, user) {
+  const counts = { best_match:0, eligible:0, partial:0, ineligible:0 };
+  results.forEach(r => counts[r.status]++);
+  const eligible = counts.best_match + counts.eligible;
+
+  document.getElementById('results-topbar').innerHTML = `
+    <div class="user-summary">
+      <div class="user-icon">🌿</div>
+      <div>
+        <div class="user-name">${user.category} 브랜드 · ${user.region}</div>
+        <div class="user-meta">매출 ${(user.revenue/100000000).toFixed(1)}억 · ${user.employees}명 · SKU ${user.sku_count}개 · ${user.target_countries.join('/')}</div>
+      </div>
+    </div>
+    <div class="result-summary">
+      <div class="result-count">
+        <div class="result-count-num gold">${eligible}</div>
+        <div class="result-count-lbl">신청가능</div>
+      </div>
+      <div class="result-count">
+        <div class="result-count-num yellow">${counts.partial}</div>
+        <div class="result-count-lbl">조건미충족</div>
+      </div>
+      <div class="result-count">
+        <div class="result-count-num" style="color:var(--text-faint)">${counts.ineligible}</div>
+        <div class="result-count-lbl">해당없음</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderFilterTabs(results) {
+  const counts = { all:results.length, best_match:0, eligible:0, partial:0, ineligible:0 };
+  results.forEach(r => counts[r.status]++);
+  const tabs = [
+    { key:'all', label:`전체 (${counts.all})` },
+    { key:'best_match', label:`✦ 최적매칭 (${counts.best_match})` },
+    { key:'eligible', label:`신청가능 (${counts.eligible})` },
+    { key:'partial', label:`조건미충족 (${counts.partial})` },
+    { key:'ineligible', label:`해당없음 (${counts.ineligible})` },
+  ];
+  document.getElementById('filter-tabs').innerHTML = tabs.map(t =>
+    `<div class="filter-tab ${currentFilter===t.key?'active':''}" onclick="setFilter('${t.key}')">${t.label}</div>`
+  ).join('');
+}
+
+function renderList(results, user) {
+  const filtered = currentFilter === 'all' ? results : results.filter(r => r.status === currentFilter);
+
+  if (filtered.length === 0) {
+    document.getElementById('results-list').innerHTML =
+      `<div style="text-align:center;padding:40px;color:var(--text-faint);font-size:13px">해당 조건의 지원사업이 없습니다.</div>`;
+    return;
+  }
+
+  document.getElementById('results-list').innerHTML = filtered.map(r => {
+    const dd = dDay(r.deadline);
+    const condItems = getConditionItems(r, user, r.filterResult);
+    const scoreColor = r.status==='best_match' ? '#C9A84C' : r.status==='eligible' ? '#4CAF7D' : r.status==='partial' ? '#E8A020' : '#4A4845';
+    const reason = getAiReason(r, user, r.status);
+
+    return `
+    <div class="support-card ${r.status}" id="card-${r.id}" onclick="toggleCard('${r.id}')">
+      <div class="sc-header">
+        <div class="sc-status-dot ${r.status}"></div>
+        <div class="sc-main">
+          <div class="sc-top">
+            <div class="sc-name">${r.name}</div>
+            <div class="sc-agency-badge ${r.agency_type}">${r.agency} · ${agencyLabel(r.agency_type)}</div>
+          </div>
+          <div class="sc-desc">${r.description}</div>
+          <div class="sc-meta-row">
+            <div class="sc-meta deadline ${dd.urgent ? 'urgent':''}">⏱ ${dd.label} · ${r.deadline}</div>
+            <div class="sc-meta">🔁 ${r.period_note}</div>
+            <div class="sc-meta">📋 ${r.support_type === 'voucher' ? '바우처' : r.support_type === 'subsidy' ? '보조금' : r.support_type === 'rd' ? 'R&D' : r.support_type === 'exhibition' ? '전시회' : '컨설팅'}</div>
+          </div>
+        </div>
+        <div class="sc-right">
+          <div>
+            <div class="sc-amount">${formatAmount(r.max_amount)}</div>
+            <div class="sc-amount-sub">최대 ${r.support_ratio}% 지원</div>
+          </div>
+          <div class="sc-status-badge ${r.status}">${statusLabel(r.status)}</div>
+        </div>
+      </div>
+      ${r.status !== 'ineligible' ? `
+      <div class="sc-score-bar">
+        <div class="score-track">
+          <div class="score-fill" style="width:${r.score}%;background:${scoreColor}"></div>
+        </div>
+        <div class="score-label">매칭 점수 ${r.score}점</div>
+      </div>` : ''}
+      <div class="sc-detail">
+        <div class="ai-reason">
+          <div class="ai-reason-label">✦ AI 매칭 분석</div>
+          ${reason}
+        </div>
+        <div class="detail-grid">
+          <div class="detail-section">
+            <div class="detail-section-title">자격 조건 체크</div>
+            ${condItems.map(item => `
+              <div class="condition-item">
+                <div class="cond-dot ${item.status}"></div>
+                <div class="cond-text ${item.status === 'fail' ? 'fail' : ''}">${item.text}</div>
+              </div>`).join('')}
+          </div>
+          <div class="detail-section">
+            <div class="detail-section-title">신청 절차</div>
+            ${r.apply_steps.map(s => `
+              <div class="apply-step">
+                <div class="apply-step-num">${s.step}</div>
+                <div>
+                  <div class="apply-step-title">${s.title}</div>
+                  <div class="apply-step-desc">${s.desc}</div>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>
+        ${r.status === 'ineligible' ? `
+        <div class="alt-suggestion">
+          <strong>💡 대안 지원사업 추천</strong>
+          위 지원은 현재 조건에 맞지 않지만, 수출바우처(일반형) 또는 초기 수출기업 육성 지원을 먼저 확인해보세요.
+        </div>` : ''}
+        <div class="detail-footer">
+          <button class="btn-apply" onclick="event.stopPropagation();window.open('${r.url}','_blank')">
+            공식 신청 페이지 →
+          </button>
+          <button class="btn-secondary" onclick="event.stopPropagation();toggleCard('${r.id}')">닫기</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCard(id) {
+  const card = document.getElementById('card-'+id);
+  const wasExpanded = card.classList.contains('expanded');
+  document.querySelectorAll('.support-card.expanded').forEach(c => c.classList.remove('expanded'));
+  if (!wasExpanded) card.classList.add('expanded');
+}
+
+function setFilter(key) {
+  currentFilter = key;
+  renderFilterTabs(matchResults);
+  renderList(matchResults, userInput);
+}
+
+// ── MAIN FLOW ───────────────────────────────────────────────────
+function startMatching() {
+  userInput = collectInput();
+  hide('input-section');
+  show('loading-section');
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  const steps = ['ls1','ls2','ls3','ls4','ls5'];
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i > 0) {
+      document.getElementById(steps[i-1]).classList.remove('active');
+      document.getElementById(steps[i-1]).classList.add('done');
+    }
+    if (i < steps.length) {
+      document.getElementById(steps[i]).classList.add('active');
+      i++;
+    } else {
+      clearInterval(interval);
+      setTimeout(showResults, 500);
+    }
+  }, 500);
+}
+
+function showResults() {
+  matchResults = matchAll(userInput);
+  hide('loading-section');
+  show('results-section');
+  window.scrollTo({top:0,behavior:'smooth'});
+  renderTopbar(matchResults, userInput);
+  renderFilterTabs(matchResults);
+  renderList(matchResults, userInput);
+}
+
+function resetApp() {
+  hide('results-section');
+  currentFilter = 'all';
+  // reset loading steps
+  ['ls1','ls2','ls3','ls4','ls5'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active','done');
+  });
+  show('input-section');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
